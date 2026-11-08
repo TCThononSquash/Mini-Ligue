@@ -12,9 +12,14 @@
   <!-- Configuration PWA -->
   <link rel="manifest" href="../manifest.webmanifest">
   <link rel="icon"
+        type="image/png"
         href="../assets/icons/icon-192.png">
   <link rel="apple-touch-icon"
         href="../assets/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable"
+        content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
 
   <style>
     * {
@@ -95,7 +100,6 @@
     }
 
     /* Bandeau supérieur */
-
     .ml-topbar {
       background: #0b0f17;
       color: #fff;
@@ -138,7 +142,6 @@
     }
 
     /* Navigation */
-
     .ml-nav {
       background: #fff;
       border-bottom: 1px solid #dbe3ec;
@@ -149,11 +152,15 @@
       max-width: 1450px;
       margin: auto;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns:
+        repeat(6, minmax(0, 1fr));
       gap: 10px;
     }
 
-    .ml-nav .ml-nav-btn {
+    .ml-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       min-width: 0;
       min-height: 46px;
@@ -166,21 +173,29 @@
       font-size: 13px;
       font-weight: 800;
       line-height: 1.3;
-      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
       transition: background .15s ease;
     }
 
-    .ml-nav .ml-nav-btn:hover {
+    .ml-nav-btn:hover {
       background: #e2e8f0;
     }
 
-    .ml-nav .ml-nav-btn:focus-visible {
+    .ml-nav-btn:focus-visible {
       outline: 2px solid #2563eb;
       outline-offset: 3px;
     }
 
-    /* Adaptation mobile */
+    /* Tablettes */
+    @media (min-width: 621px) and (max-width: 950px) {
+      .ml-nav-inner {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
 
+    /* Mobiles */
     @media (max-width: 620px) {
       .ml-topbar {
         padding: 16px 14px;
@@ -209,7 +224,7 @@
         gap: 8px;
       }
 
-      .ml-nav .ml-nav-btn {
+      .ml-nav-btn {
         font-size: 12px;
         padding: 10px 7px;
       }
@@ -256,29 +271,29 @@
 
     <div class="ml-nav-inner">
 
-      <button type="button"
-              class="ml-nav-btn"
-              onclick="ouvrirDashboard()">
+      <a class="ml-nav-btn" href="../">
+        🏠 Accueil
+      </a>
+
+      <a class="ml-nav-btn" href="./">
+        ℹ️ Infos
+      </a>
+
+      <a class="ml-nav-btn" href="../Dashboards/">
         📊 Voir classements &amp; résultats
-      </button>
+      </a>
 
-      <button type="button"
-              class="ml-nav-btn"
-              onclick="ouvrirSaisie()">
+      <a class="ml-nav-btn" href="../Saisie/">
         ✏️ Saisir un résultat
-      </button>
+      </a>
 
-      <button type="button"
-              class="ml-nav-btn"
-              onclick="ouvrirInscription()">
+      <a class="ml-nav-btn" href="../SignInSignOut/">
         👤 S'inscrire / Se désinscrire
-      </button>
+      </a>
 
-      <button type="button"
-              class="ml-nav-btn"
-              onclick="ouvrirRGPD()">
+      <a class="ml-nav-btn" href="../RGPD/">
         🛡️ RGPD
-      </button>
+      </a>
 
     </div>
   </nav>
@@ -423,25 +438,8 @@
     </div>
   </main>
 
-  <!-- NAVIGATION ET PWA -->
+  <!-- SERVICE WORKER -->
   <script>
-    function ouvrirDashboard() {
-      window.location.href = "../Dashboards/";
-    }
-
-    function ouvrirSaisie() {
-      window.location.href = "../Saisie/";
-    }
-
-    function ouvrirInscription() {
-      window.location.href = "../SignInSignOut/";
-    }
-
-    function ouvrirRGPD() {
-      window.location.href = "../RGPD/";
-    }
-
-    // Enregistrement du Service Worker
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
@@ -458,4 +456,3 @@
 
 </body>
 </html>
-
