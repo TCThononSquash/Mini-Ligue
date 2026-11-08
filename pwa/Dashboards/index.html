@@ -1,1 +1,1562 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+  <title>TC Thonon Squash - Mini-Ligue - Dashboards</title>
+
+  <meta charset="UTF-8">
+  <meta name="theme-color" content="#0b0f17">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #dbe3ec;
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --green: #16a34a;
+      --amber: #d97706;
+      --red: #dc2626;
+      --black: #0b0f17;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--black);
+      color: white;
+      padding: 20px 28px 18px;
+      box-shadow:
+        0 6px 20px rgba(0, 0, 0, .12);
+    }
+
+    .header-main { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .header-text { min-width:0; flex:1; }
+    .header-logo { width:82px; height:82px; object-fit:contain; flex-shrink:0; }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .72;
+    }
+
+    .top-line {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 6px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .updated {
+      font-size: 12px;
+      opacity: .65;
+      white-space: nowrap;
+    }
+
+    .nav {
+      background: white;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 28px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-inner {
+      max-width: 1450px;
+      margin: auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Menu principal, sous le header noir */
+    .main-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 28px;
+    }
+
+    .nav-actions {
+      max-width: 1450px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .saisie-btn {
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; text-decoration:none; min-height:46px;
+      width: 100%;
+      border: 1px solid #dbe3ec;
+      border-radius: 10px;
+      padding: 12px 10px;
+      background: #f8fafc;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .saisie-btn:hover {
+      background: #e2e8f0;
+      transform: translateY(-1px);
+    }
+
+    .phase-select {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: #fff;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .poules {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .poule-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: #edf2f7;
+      color: #334155;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .poule-btn.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .content {
+      max-width: 1450px;
+      margin: auto;
+      padding: 26px 28px 50px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(320px, .65fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow:
+        0 10px 35px rgba(15, 23, 42, .07);
+      overflow: hidden;
+    }
+
+    .card-title {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+
+    .ranking {
+      padding: 6px 0;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns:
+        64px
+        minmax(0, 1fr)
+        100px;
+      align-items: center;
+      gap: 14px;
+      padding: 17px 22px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    .rank-row:last-child {
+      border-bottom: 0;
+    }
+
+    .rank-number {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #f1f5f9;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .rank-row.pos-1 .rank-number {
+      background: #facc15;
+    }
+
+    .rank-row.pos-2 .rank-number {
+      background: #e2e8f0;
+    }
+
+    .rank-row.pos-3 .rank-number {
+      background: #fdba74;
+    }
+
+    .rank-name {
+      font-size: clamp(17px, 2vw, 22px);
+      font-weight: 900;
+      line-height: 1.12;
+    }
+
+    .rank-meta {
+      margin-top: 5px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .rank-points {
+      text-align: right;
+    }
+
+    .rank-score {
+      font-size: 30px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .rank-label {
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 850;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .next-match {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .next-body {
+      flex: 1;
+      padding: 26px 22px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .next-matches-list {
+      padding: 14px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .next-match-item {
+      padding: 16px 14px;
+      border: 1px solid #e8edf3;
+      border-radius: 14px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .next-match-item .next-badge {
+      margin-bottom: 10px;
+    }
+
+    .next-match-players {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        42px
+        minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+    }
+
+    .next-match-item .next-player {
+      font-size: clamp(16px, 2vw, 22px);
+    }
+
+    .next-match-item .vs {
+      margin: 0;
+    }
+
+    .next-badge {
+      display: inline-block;
+      border-radius: 999px;
+      background: #fef3c7;
+      color: #92400e;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 18px;
+    }
+
+    .next-player {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 950;
+      line-height: 1.05;
+    }
+
+    .vs {
+      margin: 16px 0;
+      font-size: 14px;
+      font-weight: 950;
+      color: #94a3b8;
+      letter-spacing: .18em;
+    }
+
+    .section-title {
+      margin: 34px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 32px);
+      letter-spacing: -.02em;
+    }
+
+    .count {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .match-card {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 8px 28px rgba(15, 23, 42, .06);
+      border: 1px solid #e8edf3;
+    }
+
+    .match-top {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        90px
+        minmax(0, 1fr);
+      align-items: center;
+      padding: 20px 20px 16px;
+      gap: 14px;
+    }
+
+    .player {
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 900;
+      line-height: 1.12;
+    }
+
+    .player.right {
+      text-align: right;
+    }
+
+    .score-box {
+      text-align: center;
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .score-box span {
+      color: #cbd5e1;
+      margin: 0 4px;
+    }
+
+    .winner {
+      color: var(--green);
+    }
+
+    .games {
+      border-top: 1px solid #edf2f7;
+      padding: 12px 16px 15px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .game {
+      min-width: 68px;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-align: center;
+      font-weight: 850;
+      font-size: 15px;
+    }
+
+    .forfait {
+      margin: 0 16px 16px;
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: #fff7ed;
+      color: #9a3412;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .empty {
+      padding: 38px 22px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .error {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fee2e2;
+      color: #991b1b;
+      border-radius: 14px;
+      padding: 18px 20px;
+      font-weight: 800;
+    }
+
+    .loading {
+      min-height: 50vh;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 850;
+      color: #64748b;
+    }
+
+
+    /* =========================
+       MODE TV
+       ========================= */
+
+    body.tv .nav,
+    body.tv .main-nav {
+      display: none;
+    }
+
+    body.tv .content {
+      max-width: 1700px;
+      padding-top: 30px;
+    }
+
+    body.tv .topbar {
+      padding-top: 24px;
+      padding-bottom: 22px;
+    }
+
+    body.tv .hero {
+      grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(360px, .5fr);
+    }
+
+    body.tv .rank-row {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    body.tv .results-grid {
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    }
+
+
+    @media (min-width:621px) and (max-width:950px) {
+      .nav-actions {grid-template-columns:repeat(3,minmax(0,1fr));}
+    }
+
+    @media (max-width: 950px) {
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-line {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .updated {
+        white-space: normal;
+      }
+    }
+
+
+    @media (max-width: 620px) {
+
+      .main-nav { padding: 12px 14px; }
+      .nav-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .saisie-btn { font-size: 12px; padding: 11px 6px; }
+
+
+      .header-logo { width:58px; height:58px; }
+      .header-main { gap:12px; }
+
+      .topbar,
+      .nav,
+      .content {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .rank-row {
+        grid-template-columns:
+          52px
+          minmax(0, 1fr)
+          72px;
+        gap: 8px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .rank-score {
+        font-size: 25px;
+      }
+
+      .match-top {
+        grid-template-columns:
+          minmax(0, 1fr)
+          72px
+          minmax(0, 1fr);
+        gap: 8px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .score-box {
+        font-size: 30px;
+      }
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+<div
+  id="app"
+  class="app"
+>
+
+  <div class="loading">
+    Chargement de la mini ligue…
+  </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxqOF9UpH1efIOTOrST56UXXAN6AktneNC7OCY12ybwR62hgPpJ_0WUdtFxW61m75emVw/exec";
+const params = new URLSearchParams(window.location.search);
+const INITIAL_PHASE = params.get("phase") || "";
+const INITIAL_POULE = params.get("poule") || "";
+const INITIAL_MODE = params.get("mode") || "";
+const CACHE_PREFIX = "mini-ligue-dashboard-test-v1:";
+let derniereSynchronisation = null;
+let donneesHorsLigne = false;
+let numeroRequete = 0;
+
+let dataCourante = null;
+
+let phaseCourante =
+  INITIAL_PHASE || "";
+
+let pouleCourante =
+  (INITIAL_POULE || "")
+    .toUpperCase();
+
+const modeTV =
+  String(INITIAL_MODE)
+    .toLowerCase() === "tv";
+
+let rotationTimer = null;
+let refreshTimer = null;
+
+
+// =====================================================
+// INITIALISATION
+// =====================================================
+
+if (modeTV) {
+  document.body.classList.add("tv");
+}
+
+charger();
+
+
+// =====================================================
+// CHARGEMENT
+// =====================================================
+
+async function charger() {
+  const requete = ++numeroRequete;
+  const phaseDemandee = phaseCourante;
+  const pouleDemandee = pouleCourante;
+  const url = new URL(API_URL);
+  if (phaseDemandee) url.searchParams.set("phase", phaseDemandee);
+  if (pouleDemandee) url.searchParams.set("poule", pouleDemandee);
+  const cle = CACHE_PREFIX + (phaseDemandee || "defaut") + ":" + (pouleDemandee || "defaut");
+
+  try {
+    const response = await fetch(url.toString(), {cache: "no-store"});
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const data = await response.json();
+    if (!data.success) throw new Error(data.error || "Réponse API invalide");
+    if (requete !== numeroRequete) return;
+    const savedAt = new Date().toISOString();
+    derniereSynchronisation = savedAt;
+    donneesHorsLigne = false;
+    try {
+      localStorage.setItem(cle, JSON.stringify({savedAt, data}));
+      // Enregistrer également la sélection effectivement retournée par l'API.
+      localStorage.setItem(CACHE_PREFIX + data.phase + ":" + data.poule,
+        JSON.stringify({savedAt, data}));
+      localStorage.setItem(CACHE_PREFIX + "dernier", JSON.stringify({savedAt, data}));
+    } catch (e) { console.warn("Cache local indisponible", e); }
+    appliquerDonnees(data);
+  } catch (error) {
+    if (requete !== numeroRequete) return;
+    let sauvegarde = null;
+    try {
+      sauvegarde = JSON.parse(localStorage.getItem(cle) || "null");
+      // Le dernier cache n'est acceptable que si aucune phase/poule n'a été demandée.
+      if (!sauvegarde && !phaseDemandee && !pouleDemandee) {
+        sauvegarde = JSON.parse(localStorage.getItem(CACHE_PREFIX + "dernier") || "null");
+      }
+    } catch (e) { /* stockage indisponible */ }
+    if (sauvegarde && sauvegarde.data) {
+      donneesHorsLigne = true;
+      derniereSynchronisation = sauvegarde.savedAt;
+      appliquerDonnees(sauvegarde.data);
+    } else {
+      document.getElementById("app").innerHTML =
+        '<div class="error">Données indisponibles. Connecte-toi à Internet pour charger cette phase et cette poule une première fois. ' +
+        escapeHtml(error.message || error) + '</div>';
+    }
+  }
+}
+
+function appliquerDonnees(data) {
+  dataCourante = data;
+  phaseCourante = String(data.phase || "");
+  pouleCourante = String(data.poule || "");
+  afficher(data);
+  lancerTimers();
+}
+
+// =====================================================
+// AFFICHAGE GLOBAL
+// =====================================================
+
+function afficher(data) {
+
+  const matchsTermines =
+    data.matchs.filter(
+      m =>
+        normaliserStatut(
+          m.statut
+        ) === "termine"
+    );
+
+  const matchsAPlanifier =
+    data.matchs.filter(
+      m =>
+        normaliserStatut(
+          m.statut
+        ) === "a planifier"
+    );
+
+
+  const now =
+    new Date();
+
+  document.getElementById(
+    "app"
+  ).innerHTML = `
+
+    <header class="topbar">
+      <div class="header-main">
+        <div class="header-text">
+          <div class="brand">TC Thonon Squash</div>
+          <div class="top-line">
+            <h1>
+              MINI LIGUE · PHASE ${escapeHtml(data.phase)}
+              · POULE ${escapeHtml(data.poule)}
+            </h1>
+            <div class="updated">
+              ${donneesHorsLigne ? "Hors ligne · données du " : "Actualisé à "}
+              ${derniereSynchronisation
+                ? new Date(derniereSynchronisation).toLocaleString("fr-FR", donneesHorsLigne
+                    ? {day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}
+                    : {hour:"2-digit",minute:"2-digit"})
+                : now.toLocaleTimeString("fr-FR", {hour:"2-digit",minute:"2-digit"})}
+            </div>
+          </div>
+        </div>
+        <img
+          class="header-logo"
+          src="../assets/icons/TC-Thonon-Squash-Logo.png"
+          alt="TC Thonon Squash"
+        >
+      </div>
+    </header>
+
+
+    ${modeTV
+      ? ""
+      : afficherNavigation(
+          data.navigation,
+          data.phase,
+          data.poule
+        )
+    }
+
+
+    <main class="content">
+
+      <section class="hero">
+
+        <div class="card">
+
+          <div class="card-title">
+            Classement
+          </div>
+
+          ${
+            afficherClassement(
+              data.classement
+            )
+          }
+
+        </div>
+
+
+        <div class="card next-match">
+
+          <div class="card-title">
+            Matchs à planifier
+          </div>
+
+          ${
+            afficherProchainsMatchs(
+              matchsAPlanifier
+            )
+          }
+
+        </div>
+
+      </section>
+
+
+      <div class="section-title">
+
+        <h2>
+          Derniers résultats
+        </h2>
+
+        <div class="count">
+          ${matchsTermines.length}
+          match${
+            matchsTermines.length > 1
+              ? "s"
+              : ""
+          }
+          terminé${
+            matchsTermines.length > 1
+              ? "s"
+              : ""
+          }
+        </div>
+
+      </div>
+
+
+      ${
+        afficherResultats(
+          matchsTermines
+        )
+      }
+
+    </main>
+  `;
+}
+
+
+// =====================================================
+// NAVIGATION
+// =====================================================
+
+function afficherNavigation(
+  navigation,
+  phase,
+  poule
+) {
+
+  const phaseCouranteNav =
+    navigation.find(
+      item =>
+        String(item.phase) ===
+        String(phase)
+    );
+
+
+  const poules =
+    phaseCouranteNav
+      ? phaseCouranteNav.poules
+      : [];
+
+
+  return `
+
+    <nav class="main-nav" aria-label="Navigation Mini-Ligue">
+      <div class="nav-actions">
+        <a class="saisie-btn" href="../">🏠 Accueil</a>
+        <a class="saisie-btn" href="../Infos/">ℹ️ Infos</a>
+        <a class="saisie-btn" href="./" aria-current="page">📊 Voir classements &amp; résultats</a>
+        <a class="saisie-btn" href="../Saisie/">✏️ Saisir un résultat</a>
+        <a class="saisie-btn" href="../SignInSignOut/">👤 S'inscrire / Se désinscrire</a>
+        <a class="saisie-btn" href="../RGPD/">🛡️ RGPD</a>
+      </div>
+    </nav>
+
+    <nav class="nav" aria-label="Sélection phase et poule">
+
+      <div class="nav-inner">
+
+        <select
+          class="phase-select"
+          onchange="changerPhase(this.value)"
+        >
+
+          ${
+            navigation.map(
+              item => `
+
+                <option
+                  value="${escapeAttr(item.phase)}"
+                  ${
+                    String(item.phase) ===
+                    String(phase)
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Phase ${escapeHtml(item.phase)}
+                </option>
+
+              `
+            ).join("")
+          }
+
+        </select>
+
+
+        <div class="poules">
+
+          ${
+            poules.map(
+              p => `
+
+                <button
+                  class="poule-btn ${
+                    String(p) ===
+                    String(poule)
+                      ? "active"
+                      : ""
+                  }"
+                  onclick="changerPoule('${escapeJs(p)}')"
+                >
+                  Poule ${escapeHtml(p)}
+                </button>
+
+              `
+            ).join("")
+          }
+
+        </div>
+
+
+      </div>
+
+    </nav>
+  `;
+}
+
+
+function changerPhase(phase) {
+
+  phaseCourante =
+    String(phase);
+
+  const navPhase =
+    dataCourante.navigation.find(
+      item =>
+        String(item.phase) ===
+        phaseCourante
+    );
+
+  pouleCourante =
+    navPhase &&
+    navPhase.poules.length
+      ? String(
+          navPhase.poules[0]
+        )
+      : "";
+
+  majUrl();
+
+  charger();
+}
+
+
+function changerPoule(poule) {
+
+  pouleCourante =
+    String(poule);
+
+  majUrl();
+
+  charger();
+}
+
+
+function majUrl() {
+
+  if (modeTV) {
+    return;
+  }
+
+  const url =
+    new URL(
+      window.location.href
+    );
+
+  url.searchParams.set(
+    "phase",
+    phaseCourante
+  );
+
+  url.searchParams.set(
+    "poule",
+    pouleCourante
+  );
+
+  window.history.replaceState(
+    {},
+    "",
+    url
+  );
+}
+
+
+// =====================================================
+// CLASSEMENT
+// =====================================================
+
+function afficherClassement(
+  classement
+) {
+
+  if (!classement.length) {
+
+    return `
+      <div class="empty">
+        Aucun classement disponible.
+      </div>
+    `;
+  }
+
+
+  return `
+
+    <div class="ranking">
+
+      ${
+        classement.map(
+          ligne => `
+
+            <div
+              class="rank-row pos-${Number(ligne.classement)}"
+            >
+
+              <div class="rank-number">
+                ${
+                  medaille(
+                    ligne.classement
+                  )
+                }
+              </div>
+
+
+              <div>
+
+                <div class="rank-name">
+                  ${escapeHtml(ligne.joueur)}
+                </div>
+
+                <div class="rank-meta">
+
+                  ${ligne.matchsGagnes} V
+                  ·
+                  ${ligne.matchsPerdus} D
+
+                  · Jeux
+                  ${
+                    signe(
+                      ligne.jeuxDiff
+                    )
+                  }
+
+                  · Points
+                  ${
+                    signe(
+                      ligne.pointsDiff
+                    )
+                  }
+
+                </div>
+
+              </div>
+
+
+              <div class="rank-points">
+
+                <div class="rank-score">
+                  ${ligne.score}
+                </div>
+
+                <div class="rank-label">
+                  pts
+                </div>
+
+              </div>
+
+            </div>
+
+          `
+        ).join("")
+      }
+
+    </div>
+  `;
+}
+
+
+function medaille(position) {
+
+  const p =
+    Number(position);
+
+  if (p === 1) {
+    return "🥇";
+  }
+
+  if (p === 2) {
+    return "🥈";
+  }
+
+  if (p === 3) {
+    return "🥉";
+  }
+
+  return String(position);
+}
+
+
+// =====================================================
+// MATCHS À PLANIFIER
+// =====================================================
+
+function afficherProchainsMatchs(matchs) {
+
+  if (!matchs.length) {
+
+    return `
+      <div class="next-body">
+
+        <div>
+
+          <div class="next-badge">
+            Poule terminée
+          </div>
+
+          <div
+            style="
+              font-size:19px;
+              font-weight:850;
+              color:#64748b;
+            "
+          >
+            Aucun match à planifier
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  return `
+
+    <div class="next-matches-list">
+
+      ${
+        matchs.map(
+          match => `
+
+            <div class="next-match-item">
+
+              <div class="next-badge">
+                À planifier
+              </div>
+
+              <div class="next-match-players">
+
+                <div class="next-player">
+                  ${escapeHtml(match.joueurA)}
+                </div>
+
+                <div class="vs">
+                  VS
+                </div>
+
+                <div class="next-player">
+                  ${escapeHtml(match.joueurB)}
+                </div>
+
+              </div>
+
+            </div>
+
+          `
+        ).join("")
+      }
+
+    </div>
+  `;
+}
+
+
+// =====================================================
+// RÉSULTATS
+// =====================================================
+
+function afficherResultats(
+  matchs
+) {
+
+  if (!matchs.length) {
+
+    return `
+      <div class="card empty">
+        Aucun résultat enregistré
+        pour cette poule.
+      </div>
+    `;
+  }
+
+
+  return `
+
+    <div class="results-grid">
+
+      ${
+        matchs.map(
+          match =>
+            afficherCarteMatch(
+              match
+            )
+        ).join("")
+      }
+
+    </div>
+  `;
+}
+
+
+function afficherCarteMatch(
+  match
+) {
+
+  const scoreA =
+    Number(match.scoreA);
+
+  const scoreB =
+    Number(match.scoreB);
+
+  const aGagne =
+    scoreA > scoreB;
+
+  const bGagne =
+    scoreB > scoreA;
+
+
+  const jeux =
+    match.jeux.filter(
+      jeu =>
+        jeu[0] !== "" &&
+        jeu[1] !== ""
+    );
+
+
+  return `
+
+    <article class="match-card">
+
+      <div class="match-top">
+
+        <div
+          class="player ${
+            aGagne
+              ? "winner"
+              : ""
+          }"
+        >
+          ${escapeHtml(match.joueurA)}
+        </div>
+
+
+        <div class="score-box">
+
+          <strong>
+            ${escapeHtml(match.scoreA)}
+          </strong>
+
+          <span>
+            —
+          </span>
+
+          <strong>
+            ${escapeHtml(match.scoreB)}
+          </strong>
+
+        </div>
+
+
+        <div
+          class="player right ${
+            bGagne
+              ? "winner"
+              : ""
+          }"
+        >
+          ${escapeHtml(match.joueurB)}
+        </div>
+
+      </div>
+
+
+      <div class="games">
+
+        ${
+          jeux.map(
+            jeu => `
+
+              <div class="game">
+                ${escapeHtml(jeu[0])}
+                —
+                ${escapeHtml(jeu[1])}
+              </div>
+
+            `
+          ).join("")
+        }
+
+      </div>
+
+
+      ${
+        match.forfait
+          ? `
+
+              <div class="forfait">
+                Forfait :
+                ${escapeHtml(match.forfait)}
+              </div>
+
+            `
+          : ""
+      }
+
+    </article>
+  `;
+}
+
+
+// =====================================================
+// MODE TV
+// =====================================================
+
+function lancerTimers() {
+
+  if (refreshTimer) {
+    clearInterval(
+      refreshTimer
+    );
+  }
+
+  refreshTimer =
+    setInterval(
+      function() {
+        charger();
+      },
+      60000
+    );
+
+
+  if (!modeTV) {
+    return;
+  }
+
+
+  if (rotationTimer) {
+    clearInterval(
+      rotationTimer
+    );
+  }
+
+
+  rotationTimer =
+    setInterval(
+      function() {
+
+        passerPouleSuivante();
+
+      },
+      20000
+    );
+}
+
+
+function passerPouleSuivante() {
+
+  if (
+    !dataCourante ||
+    !dataCourante.navigation.length
+  ) {
+    return;
+  }
+
+
+  // En mode TV, on reste toujours sur la phase
+  // la plus récente disponible (navigation[0]).
+  const dernierePhase =
+    dataCourante.navigation[0];
+
+  if (
+    !dernierePhase ||
+    !dernierePhase.poules ||
+    !dernierePhase.poules.length
+  ) {
+    return;
+  }
+
+
+  const phaseRecente =
+    String(dernierePhase.phase);
+
+  const poules =
+    dernierePhase.poules.map(
+      p => String(p)
+    );
+
+
+  let index =
+    poules.findIndex(
+      p =>
+        p ===
+        String(pouleCourante)
+    );
+
+
+  // Si le mode TV démarre sur une ancienne phase
+  // ou une poule inconnue, on repart de la première
+  // poule de la phase la plus récente.
+  if (
+    String(phaseCourante) !==
+      phaseRecente ||
+    index === -1
+  ) {
+
+    phaseCourante =
+      phaseRecente;
+
+    pouleCourante =
+      poules[0];
+
+    charger();
+    return;
+  }
+
+
+  index =
+    (index + 1) %
+    poules.length;
+
+  phaseCourante =
+    phaseRecente;
+
+  pouleCourante =
+    poules[index];
+
+  charger();
+}
+
+
+// =====================================================
+// OUTILS
+// =====================================================
+
+function normaliserStatut(
+  statut
+) {
+
+  return String(statut || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
+}
+
+
+function signe(value) {
+
+  const n =
+    Number(value);
+
+  if (isNaN(n)) {
+    return escapeHtml(value);
+  }
+
+  return n > 0
+    ? "+" + n
+    : String(n);
+}
+
+
+function escapeHtml(value) {
+
+  return String(
+    value === null ||
+    value === undefined
+      ? ""
+      : value
+  )
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function escapeAttr(value) {
+
+  return escapeHtml(value);
+}
+
+
+function escapeJs(value) {
+
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
+}
+
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("../service-worker.js")
+      .catch(error => console.warn("Service Worker :", error));
+  });
+}
+</script>
+</body>
+
+</html>
