@@ -1,1 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+  <title>TC Thonon Squash — Mini-Ligue — Inscription et Désinscription</title>
+  <link rel="manifest" href="../manifest.webmanifest">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f1f5f9;color:#0f172a;line-height:1.6}
+    .ml-topbar{background:#0b0f17;color:#fff;padding:20px 28px 18px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
+    .ml-header-main{display:flex;align-items:center;justify-content:space-between;gap:24px}.ml-header-text{min-width:0;flex:1}
+    .ml-brand{font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
+    .ml-title{margin:6px 0 0;font-size:clamp(23px,3.2vw,42px);line-height:1.12;letter-spacing:-.03em}
+    .ml-logo{width:82px;height:82px;object-fit:contain;flex-shrink:0}
+    .ml-nav{background:#fff;border-bottom:1px solid #dbe3ec;padding:14px 28px}
+    .ml-nav-inner{max-width:1450px;margin:auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+    .ml-nav a{display:flex;align-items:center;justify-content:center;text-align:center;min-width:0;min-height:46px;padding:10px 9px;border:1px solid #dbe3ec;border-radius:10px;background:#f1f5f9;color:#334155;font-size:13px;font-weight:800;line-height:1.3;text-decoration:none}
+    .ml-nav a:hover{background:#e2e8f0}.ml-nav a.active{background:#111827;border-color:#111827;color:#fff}
+    .app{width:100%;max-width:760px;margin:auto;padding:18px}.card{background:#fff;border-radius:18px;padding:26px;box-shadow:0 7px 25px rgba(0,0,0,.08)}
+    .intro{margin:0 0 22px;font-size:15px;color:#334155}.form-field{margin:0 0 20px}
+    .form-field label{display:block;margin-bottom:7px;font-weight:800;font-size:14px}
+    .form-field select,.form-field input{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:12px;font:inherit;background:#fff;color:#0f172a}
+    .form-field select:focus,.form-field input:focus{outline:2px solid #2563eb;outline-offset:1px}
+    .submit-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#111827;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+    .submit-btn:disabled{opacity:.55;cursor:not-allowed}
+    .form-message{margin-top:16px;padding:12px;border-radius:10px;font-weight:700;display:none}
+    .form-message.ok{display:block;background:#dcfce7;color:#166534}.form-message.error{display:block;background:#fee2e2;color:#991b1b}
+    .form-message.info{display:block;background:#dbeafe;color:#1e40af}
+    .privacy{font-size:12px;color:#64748b;margin:-10px 0 20px}.privacy a{color:#2563eb}
+    .footer{margin:18px 0 4px;text-align:center;color:#94a3b8;font-size:12px}
+    .test-label{font-size:12px;font-weight:800;color:#92400e;background:#fef3c7;padding:5px 10px;border-radius:20px;display:inline-block;margin-bottom:14px}
+    @media(max-width:900px){.ml-nav-inner{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:620px){.ml-topbar{padding:16px 14px}.ml-title{font-size:23px}.ml-logo{width:58px;height:58px}.ml-header-main{gap:12px}.ml-nav{padding:12px 14px}.ml-nav-inner{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ml-nav a{font-size:12px;padding:10px 7px}.app{padding:12px}.card{padding:20px 17px}}
+  </style>
+</head>
+<body>
+  <header class="ml-topbar"><div class="ml-header-main"><div class="ml-header-text"><div class="ml-brand">TC Thonon Squash</div><h1 class="ml-title">Mini-Ligue — Inscription et Désinscription</h1></div><img class="ml-logo" src="../assets/icons/TC-Thonon-Squash-Logo.png" alt="TC Thonon Squash"></div></header>
+  <nav class="ml-nav" aria-label="Navigation Mini-Ligue"><div class="ml-nav-inner">
+    <a href="../">🏠 Accueil</a><a href="../Infos/">ℹ️ Infos</a><a href="../Dashboards/">📊 Voir classements &amp; résultats</a><a href="../Saisie/">✏️ Saisir un résultat</a><a class="active" aria-current="page" href="./">👤 S'inscrire / Se désinscrire</a><a href="../RGPD/">🛡️ RGPD</a>
+  </div></nav>
+  <main class="app"><div class="card">
+    <span class="test-label">ENVIRONNEMENT TEST</span>
+    <p class="intro">Demandez votre inscription ou votre désinscription à la Mini-Ligue. Votre demande sera examinée par la commission squash.</p>
+    <form id="formInscription">
+      <div class="form-field"><label for="demande">Votre demande *</label><select id="demande" name="demande" required><option value="" selected disabled>Choisir une demande</option><option value="Inscription">Inscription</option><option value="Désinscription">Désinscription</option></select></div>
+      <div class="form-field"><label for="email">Votre adresse e-mail *</label><input id="email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="joueur@exemple.fr" required></div>
+      <p class="privacy">Votre adresse e-mail est utilisée pour le traitement de votre demande. <a href="../RGPD/">Informations RGPD</a>.</p>
+      <div class="form-field"><label for="niveau">Votre niveau *</label><select id="niveau" name="niveau" required><option value="" selected disabled>Choisir votre niveau</option><option value="Compétition 1/2">Compétition 1/2</option><option value="Compétition 3/4">Compétition 3/4</option><option value="Compétition 5">Compétition 5</option><option value="Loisir Intermédiaire">Loisir Intermédiaire</option><option value="Loisir Débutant">Loisir Débutant</option></select></div>
+      <button id="btnEnvoyer" class="submit-btn" type="submit">Envoyer ma demande</button>
+      <div id="messageFormulaire" class="form-message" role="status" aria-live="polite"></div>
+    </form>
+  </div><div class="footer">TC Thonon Squash · Mini-Ligue · Inscription et Désinscription</div></main>
+<script>
+  'use strict';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwnES7Y14VSSRvl6i3EI7MgDELVmnnnNq2uOTh-KdHRAUHDxsqDX3mHS_TcKevPEebj/exec';
+  // REMPLACER API_URL par l'URL /exec de la nouvelle API SignInSignOut TEST.
+  const form = document.getElementById('formInscription');
+  const button = document.getElementById('btnEnvoyer');
+  const message = document.getElementById('messageFormulaire');
+  let submitting = false;
+  function showMessage(text, type) { message.textContent = text; message.className = 'form-message ' + type; }
+  function onlineState() {
+    if (!navigator.onLine) {
+      button.disabled = true;
+      if (!submitting) showMessage('Mode hors ligne : reconnectez-vous à Internet pour envoyer votre demande.', 'info');
+    } else if (!submitting) {
+      button.disabled = false;
+      if (message.classList.contains('info')) { message.className = 'form-message'; message.textContent = ''; }
+    }
+  }
+  window.addEventListener('online', onlineState);
+  window.addEventListener('offline', onlineState);
+  onlineState();
+
+  function requestId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  }
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+  async function recorded(id) {
+    const url = API_URL + '?action=status&requestId=' + encodeURIComponent(id) + '&t=' + Date.now();
+    const res = await fetch(url, {cache: 'no-store', redirect: 'follow'});
+    if (!res.ok) throw new Error('Statut HTTP ' + res.status);
+    const data = await res.json();
+    if (!data.success || data.environnement !== 'TEST') throw new Error('Réponse de statut invalide.');
+    return data.recorded === true;
+  }
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    if (!navigator.onLine) { onlineState(); return; }
+    if (API_URL.includes('PLACEHOLDER')) { showMessage('Configuration incomplète : renseigner l’URL de l’API TEST dans index.html.', 'error'); return; }
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'Envoi en cours…';
+    showMessage('Transmission de la demande…', 'info');
+    const id = requestId();
+    const params = new URLSearchParams({
+      action: 'submit', requestId: id,
+      demande: document.getElementById('demande').value,
+      email: document.getElementById('email').value.trim(),
+      niveau: document.getElementById('niveau').value
+    });
+    let networkError = null;
+    try {
+      // Simple request : pas de preflight CORS. La réponse POST reste opaque.
+      await fetch(API_URL, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: params});
+    } catch (err) { networkError = err; }
+    let confirmed = false;
+    let verified = false;
+    for (let attempt = 0; attempt < 7 && !confirmed; attempt++) {
+      await delay(attempt === 0 ? 900 : 1300);
+      try { confirmed = await recorded(id); verified = true; }
+      catch (err) { console.warn('Vérification impossible', err); }
+    }
+    if (confirmed) {
+      form.reset();
+      showMessage('Votre demande a bien été enregistrée. Elle sera examinée par la commission squash.', 'ok');
+    } else if (verified) {
+      showMessage('Demande non confirmée. Vérifiez auprès de la commission avant de réessayer (limite de 5 demandes par jour).', 'error');
+    } else {
+      showMessage('Impossible de confirmer la réception de votre demande. Vérifiez votre connexion et contactez la commission avant de recommencer.', 'error');
+    }
+    if (networkError) console.warn('Envoi POST :', networkError);
+    submitting = false;
+    button.textContent = 'Envoyer ma demande';
+    onlineState();
+  });
+</script>
+</body></html>
 
