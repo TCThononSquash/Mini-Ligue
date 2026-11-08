@@ -1,1 +1,461 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+
+  <title>TC Thonon Squash - Mini-Ligue - Infos</title>
+
+  <!-- Configuration PWA -->
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon"
+        href="../assets/icons/icon-192.png">
+  <link rel="apple-touch-icon"
+        href="../assets/icons/icon-192.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 7px 25px rgba(0,0,0,.08);
+    }
+
+    .intro {
+      margin-top: 0;
+      font-size: 15px;
+    }
+
+    section {
+      padding: 18px 0;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    section:first-of-type {
+      margin-top: 8px;
+    }
+
+    h2 {
+      margin: 0 0 7px;
+      font-size: 16px;
+      color: #0f172a;
+    }
+
+    p {
+      margin: 0;
+      font-size: 15px;
+      color: #334155;
+    }
+
+    .card a {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .card a:hover {
+      color: #1d4ed8;
+    }
+
+    .card a:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .footer {
+      margin: 18px 0 4px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    /* Bandeau supérieur */
+
+    .ml-topbar {
+      background: #0b0f17;
+      color: #fff;
+      padding: 20px 28px 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    }
+
+    .ml-header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .ml-header-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .ml-brand {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .72;
+    }
+
+    .ml-title {
+      margin: 6px 0 0;
+      font-size: clamp(23px, 3.2vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -.03em;
+    }
+
+    .ml-logo {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    /* Navigation */
+
+    .ml-nav {
+      background: #fff;
+      border-bottom: 1px solid #dbe3ec;
+      padding: 14px 28px;
+    }
+
+    .ml-nav-inner {
+      max-width: 1450px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .ml-nav .ml-nav-btn {
+      width: 100%;
+      min-width: 0;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #dbe3ec;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #334155;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.3;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .ml-nav .ml-nav-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .ml-nav .ml-nav-btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+    }
+
+    /* Adaptation mobile */
+
+    @media (max-width: 620px) {
+      .ml-topbar {
+        padding: 16px 14px;
+      }
+
+      .ml-title {
+        font-size: 23px;
+      }
+
+      .ml-logo {
+        width: 58px;
+        height: 58px;
+      }
+
+      .ml-header-main {
+        gap: 12px;
+      }
+
+      .ml-nav {
+        padding: 12px 14px;
+      }
+
+      .ml-nav-inner {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .ml-nav .ml-nav-btn {
+        font-size: 12px;
+        padding: 10px 7px;
+      }
+
+      .app {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 20px 17px;
+      }
+
+      section {
+        padding: 15px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="ml-topbar">
+    <div class="ml-header-main">
+      <div class="ml-header-text">
+        <div class="ml-brand">
+          TC Thonon Squash
+        </div>
+        <h1 class="ml-title">
+          Mini-Ligue - Infos
+        </h1>
+      </div>
+
+      <img
+        class="ml-logo"
+        src="../assets/icons/TC-Thonon-Squash-Logo.png"
+        alt="TC Thonon Squash">
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="ml-nav"
+       aria-label="Navigation Mini-Ligue">
+
+    <div class="ml-nav-inner">
+
+      <button type="button"
+              class="ml-nav-btn"
+              onclick="ouvrirDashboard()">
+        📊 Voir classements &amp; résultats
+      </button>
+
+      <button type="button"
+              class="ml-nav-btn"
+              onclick="ouvrirSaisie()">
+        ✏️ Saisir un résultat
+      </button>
+
+      <button type="button"
+              class="ml-nav-btn"
+              onclick="ouvrirInscription()">
+        👤 S'inscrire / Se désinscrire
+      </button>
+
+      <button type="button"
+              class="ml-nav-btn"
+              onclick="ouvrirRGPD()">
+        🛡️ RGPD
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- CONTENU -->
+  <main class="app">
+    <div class="card">
+
+      <p class="intro">
+        La commission Squash du TC Thonon organise
+        bénévolement cette Mini-Ligue.
+        Elle est interne au club, non officielle
+        et sans lien avec le classement de la
+        Fédération Française de Squash.
+      </p>
+
+      <section>
+        <h2>Comment s'inscrire ?</h2>
+
+        <p>
+          Vous pouvez contacter une des personnes
+          de la commission Squash via WhatsApp,
+          en message privé ou via la communauté
+          accessible par le QR code affiché au club.
+
+          L'intégration à la Mini-Ligue se fera
+          lors de la prochaine phase.
+          Une phase dure environ 2 mois.
+        </p>
+      </section>
+
+      <section>
+        <h2>Comment fonctionne la Mini-Ligue ?</h2>
+
+        <p>
+          Il s'agit de matchs amicaux internes au club
+          sous forme de mini-championnat
+          (loisir, non classé).
+
+          Les joueurs sont répartis dans plusieurs
+          poules d'environ 4 joueurs.
+
+          Les joueurs s'organisent entre eux pour
+          disputer leurs matchs pendant la période
+          définie.
+
+          Il s'agit donc de rencontres amicales,
+          avec réservation classique des courts
+          de squash.
+
+          Environ 3 matchs par personne sur 2 mois.
+
+          <br><br>
+
+          Matchs en 3 jeux gagnants.
+
+          <br>
+          Victoire : 3 points /
+          Défaite : 1 point /
+          Forfait : 0 point.
+
+          <br>
+          Départage au score, puis à la différence
+          de jeux, puis à la différence de points.
+
+          <br><br>
+
+          À l'issue de chaque phase,
+          les premiers montent et les derniers
+          descendent dans chaque poule.
+        </p>
+      </section>
+
+      <section>
+        <h2>Comment noter les résultats ?</h2>
+
+        <p>
+          En renseignant votre score sur ce site
+          internet.
+
+          Le
+          <a href="../Saisie/">
+            formulaire
+          </a>
+          contient une liste des matchs en cours.
+
+          <br><br>
+
+          Après soumission, un administrateur
+          validera ou refusera votre résultat.
+          Vous recevrez un e-mail de notification
+          une fois la demande traitée.
+
+          <br><br>
+
+          Si cela n'est pas confortable pour vous,
+          vous pouvez contacter directement
+          une personne de la commission Squash
+          qui s'en chargera pour vous.
+
+          <br><br>
+
+          Après validation, le
+          <a href="../Dashboards/">
+            classement
+          </a>
+          est mis à jour automatiquement
+          sur le site internet.
+        </p>
+      </section>
+
+      <section>
+        <h2>Quels sont les avantages de la Mini-Ligue ?</h2>
+
+        <p>
+          Vous allez rencontrer de nouvelles personnes
+          partageant votre intérêt pour le squash.
+
+          <br><br>
+
+          Avec le brassage par poule,
+          vous allez rencontrer des joueurs
+          d'un niveau proche du vôtre.
+
+          Cela peut être l'occasion de faire
+          connaissance avec des personnes
+          avec lesquelles vous pourrez rejouer
+          régulièrement.
+
+          <br><br>
+
+          La Mini-Ligue est aussi une manière
+          de se challenger, de progresser
+          et de bénéficier de conseils.
+        </p>
+      </section>
+
+    </div>
+
+    <div class="footer">
+      TC Thonon Squash · Mini-Ligue · Infos
+    </div>
+  </main>
+
+  <!-- NAVIGATION ET PWA -->
+  <script>
+    function ouvrirDashboard() {
+      window.location.href = "../Dashboards/";
+    }
+
+    function ouvrirSaisie() {
+      window.location.href = "../Saisie/";
+    }
+
+    function ouvrirInscription() {
+      window.location.href = "../SignInSignOut/";
+    }
+
+    function ouvrirRGPD() {
+      window.location.href = "../RGPD/";
+    }
+
+    // Enregistrement du Service Worker
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("../service-worker.js")
+          .catch(error => {
+            console.error(
+              "Erreur Service Worker :",
+              error
+            );
+          });
+      });
+    }
+  </script>
+
+</body>
+</html>
+
