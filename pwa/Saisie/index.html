@@ -1,1 +1,3616 @@
+<!DOCTYPE html>
+
+
+<html>
+
+
+<head>
+
+
+  <meta charset="utf-8">
+  <link rel="manifest" href="../manifest.webmanifest">
+
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1"
+  >
+
+
+  <style>
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+
+      margin: 0;
+
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+
+      background:
+        #f1f5f9;
+
+
+      color:
+        #0f172a;
+    }
+
+
+
+
+    .app {
+
+
+      width: 100%;
+
+
+      max-width: 650px;
+
+
+      margin: auto;
+
+
+      padding: 18px;
+    }
+
+
+
+
+    /* ====================================
+       HEADER
+    ==================================== */
+
+
+    .header {
+
+
+      margin-bottom: 20px;
+
+
+      text-align: center;
+
+
+      position: relative;
+
+
+      min-height: 72px;
+
+
+      padding-left: 80px;
+
+
+      padding-right: 80px;
+    }
+
+
+
+
+    .header-logo {
+
+
+      position: absolute;
+
+
+      right: 0;
+
+
+      top: 50%;
+
+
+      transform: translateY(-50%);
+
+
+      width: 68px;
+
+
+      height: 68px;
+
+
+      object-fit: contain;
+    }
+
+
+
+
+    .club {
+
+
+      font-size: 13px;
+
+
+      font-weight: 700;
+
+
+      color: #64748b;
+
+
+      text-transform: uppercase;
+
+
+      letter-spacing: 1.2px;
+    }
+
+
+
+
+    h1 {
+
+
+      margin: 5px 0 0;
+
+
+      font-size: 27px;
+    }
+
+
+
+
+    /* ====================================
+       SELECT MATCH
+    ==================================== */
+
+
+    /* Champs de score verrouillés en cas de forfait */
+    input[type="number"]:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background: #e5e7eb;
+      color: #64748b;
+    }
+
+
+
+
+    .select-card {
+
+
+      background: white;
+
+
+      border-radius: 16px;
+
+
+      padding: 16px;
+
+
+      box-shadow:
+        0 4px 15px rgba(0,0,0,.06);
+
+
+      margin-bottom: 16px;
+    }
+
+
+
+
+    .label {
+
+
+      display: block;
+
+
+      font-size: 13px;
+
+
+      font-weight: bold;
+
+
+      color: #64748b;
+
+
+      margin-bottom: 8px;
+
+
+      text-transform: uppercase;
+    }
+
+
+
+
+    select {
+
+
+      width: 100%;
+
+
+      border: 1px solid #cbd5e1;
+
+
+      border-radius: 10px;
+
+
+      background: white;
+
+
+      padding: 13px;
+
+
+      font-size: 15px;
+
+
+      color: #0f172a;
+    }
+
+
+
+
+
+    .email-privacy {
+      margin-top: 9px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #64748b;
+    }
+
+    .email-privacy a {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .email-privacy a:hover {
+      text-decoration: underline;
+    }
+
+
+    /* ====================================
+       SCOREBOARD
+    ==================================== */
+
+
+    .scoreboard {
+
+
+      background: #0f172a;
+
+
+      color: white;
+
+
+      border-radius: 18px;
+
+
+      overflow: hidden;
+
+
+      box-shadow:
+        0 7px 25px rgba(0,0,0,.15);
+    }
+
+
+
+
+    .match-info {
+
+
+      text-align: center;
+
+
+      padding: 13px;
+
+
+      background: #1e293b;
+
+
+      font-size: 13px;
+
+
+      color: #cbd5e1;
+
+
+      font-weight: 600;
+    }
+
+
+
+
+    .players {
+
+
+      display: grid;
+
+
+      grid-template-columns:
+        1fr 70px 1fr;
+
+
+      align-items: center;
+
+
+      padding:
+        22px 12px 12px;
+    }
+
+
+
+
+    .player {
+
+
+      text-align: center;
+
+
+      font-size: 19px;
+
+
+      font-weight: 800;
+
+
+      word-break: break-word;
+    }
+
+
+
+
+    .versus {
+
+
+      text-align: center;
+
+
+      font-size: 12px;
+
+
+      color: #94a3b8;
+    }
+
+
+
+
+    /* ====================================
+       MATCH SCORE
+    ==================================== */
+
+
+    .match-score {
+
+
+      display: grid;
+
+
+      grid-template-columns:
+        1fr 60px 1fr;
+
+
+      align-items: center;
+
+
+      padding: 5px 25px 25px;
+    }
+
+
+
+
+    .big-score {
+
+
+      text-align: center;
+
+
+      font-size: 58px;
+
+
+      line-height: 1;
+
+
+      font-weight: 900;
+    }
+
+
+
+
+    .separator {
+
+
+      text-align: center;
+
+
+      font-size: 35px;
+
+
+      color: #64748b;
+    }
+
+
+
+
+    /* ====================================
+       GAMES TABLE
+    ==================================== */
+
+
+    .games {
+
+
+      background: white;
+
+
+      color: #0f172a;
+
+
+      padding:
+        10px 14px 18px;
+    }
+
+
+
+
+    .game-header,
+    .game-row {
+
+
+      display: grid;
+
+
+      grid-template-columns:
+        65px 1fr 35px 1fr;
+
+
+      align-items: center;
+
+
+      gap: 6px;
+    }
+
+
+
+
+    .game-header {
+
+
+      padding:
+        10px 0;
+
+
+      font-size: 12px;
+
+
+      color: #64748b;
+
+
+      text-transform: uppercase;
+
+
+      font-weight: bold;
+    }
+
+
+
+
+    .game-row {
+
+
+      padding:
+        7px 0;
+
+
+      border-top:
+        1px solid #e2e8f0;
+    }
+
+
+
+
+    .game-number {
+
+
+      font-size: 13px;
+
+
+      font-weight: bold;
+
+
+      color: #64748b;
+    }
+
+
+
+
+    input {
+
+
+      width: 100%;
+
+
+      height: 56px;
+
+
+      border:
+        2px solid #cbd5e1;
+
+
+      border-radius: 10px;
+
+
+      text-align: center;
+
+
+      font-size: 27px;
+
+
+      font-weight: 800;
+
+
+      color: #0f172a;
+
+
+      background: #f8fafc;
+    }
+
+
+
+
+    input:focus {
+
+
+      outline: none;
+
+
+      border-color: #0f172a;
+
+
+      background: white;
+    }
+
+
+
+
+    .dash {
+
+
+      text-align: center;
+
+
+      font-size: 24px;
+
+
+      color: #94a3b8;
+    }
+
+
+
+
+    .hidden {
+
+
+      display: none;
+    }
+
+
+    .dashboard-button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px 18px;
+
+
+      border: 2px solid #111827;
+      border-radius: 12px;
+
+
+      background: white;
+      color: #111827;
+
+
+      font-size: 14px;
+      font-weight: 800;
+
+
+      cursor: pointer;
+    }
+
+
+    .dashboard-button:hover {
+      background: #f1f5f9;
+    }
+
+
+    /* ====================================
+       BUTTONS
+    ==================================== */
+
+
+    .actions {
+
+
+      background: white;
+
+
+      padding:
+        0 14px 18px;
+    }
+
+
+
+
+    button {
+
+
+      width: 100%;
+
+
+      border: none;
+
+
+      border-radius: 12px;
+
+
+      padding: 17px;
+
+
+      font-size: 17px;
+
+
+      font-weight: 800;
+
+
+      cursor: pointer;
+
+
+      background: #16a34a;
+
+
+      color: white;
+
+
+      transition:
+        transform .1s,
+        opacity .1s;
+    }
+
+
+
+
+    button:active {
+
+
+      transform:
+        scale(.98);
+    }
+
+
+
+
+    button:disabled {
+
+
+      opacity: .45;
+
+
+      cursor: default;
+    }
+
+
+
+
+    /* ====================================
+       MESSAGE
+    ==================================== */
+
+
+    .message {
+
+
+      margin-top: 15px;
+
+
+      padding: 14px;
+
+
+      border-radius: 10px;
+
+
+      text-align: center;
+
+
+      font-size: 14px;
+
+
+      font-weight: bold;
+
+
+      display: none;
+    }
+
+
+
+
+    .error {
+
+
+      display: block;
+
+
+      background: #fee2e2;
+
+
+      color: #991b1b;
+    }
+
+
+
+
+    .info {
+
+
+      display: block;
+
+
+      background: #dbeafe;
+
+
+      color: #1e40af;
+    }
+
+
+
+
+    /* ====================================
+       SUCCESS SCREEN
+    ==================================== */
+
+
+    .success {
+
+
+      background: white;
+
+
+      border-radius: 18px;
+
+
+      padding: 35px 20px;
+
+
+      text-align: center;
+
+
+      box-shadow:
+        0 7px 25px rgba(0,0,0,.08);
+    }
+
+
+
+
+    .success-check {
+
+
+      font-size: 50px;
+    }
+
+
+
+
+    .success-score {
+
+
+      margin:
+        25px 0;
+
+
+      font-size: 33px;
+
+
+      font-weight: 900;
+    }
+
+
+
+
+    .success p {
+
+
+      color: #64748b;
+    }
+
+
+
+
+    .new-match {
+
+
+      margin-top: 20px;
+
+
+      background: #0f172a;
+    }
+
+
+
+
+    /* ====================================
+       MOBILE
+    ==================================== */
+
+
+    @media(max-width:480px) {
+
+
+      .header {
+
+
+        min-height: 58px;
+
+
+        padding-left: 60px;
+
+
+        padding-right: 60px;
+      }
+
+
+
+
+      .header-logo {
+
+
+        width: 52px;
+
+
+        height: 52px;
+      }
+
+
+
+
+      .app {
+        padding: 12px;
+      }
+
+
+
+
+      .player {
+        font-size: 16px;
+      }
+
+
+
+
+      .players {
+
+
+        grid-template-columns:
+          1fr 40px 1fr;
+      }
+
+
+
+
+      .big-score {
+
+
+        font-size: 52px;
+      }
+
+
+
+
+      .game-header,
+      .game-row {
+
+
+        grid-template-columns:
+          53px 1fr 25px 1fr;
+      }
+
+
+
+
+      input {
+
+
+        height: 53px;
+
+
+        font-size: 25px;
+      }
+
+
+    }
+
+
+
+    /* Bandeau commun Mini-Ligue : styles limites au header et au menu */
+    .ml-topbar {
+      background: #0b0f17;
+      color: #fff;
+      padding: 20px 28px 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    }
+    .ml-header-main { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .ml-header-text { min-width: 0; flex: 1; }
+    .ml-brand { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .72; }
+    .ml-title { margin: 6px 0 0; font-size: clamp(23px, 3.2vw, 42px); line-height: 1.12; letter-spacing: -.03em; }
+    .ml-logo { width: 82px; height: 82px; object-fit: contain; flex-shrink: 0; }
+    .ml-nav { background: #fff; border-bottom: 1px solid #dbe3ec; padding: 14px 28px; }
+    .ml-nav-inner { max-width: 1450px; margin: auto; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+    .ml-nav .ml-nav-btn { display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none;
+      width: 100%; min-width: 0; min-height: 46px; padding: 10px 12px;
+      border: 1px solid #dbe3ec; border-radius: 10px;
+      background: #f1f5f9; color: #334155;
+      font-size: 13px; font-weight: 800; line-height: 1.3;
+      cursor: pointer; transition: background .15s ease;
+    }
+    .ml-nav .ml-nav-btn:hover { background: #e2e8f0; }
+    .ml-nav .ml-nav-btn.active { background: #111827; border-color: #111827; color: #fff; }
+    @media (max-width: 900px) and (min-width: 621px) { .ml-nav-inner { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+    @media (max-width: 620px) {
+      .ml-topbar { padding: 16px 14px; }
+      .ml-title { font-size: 23px; }
+      .ml-logo { width: 58px; height: 58px; }
+      .ml-header-main { gap: 12px; }
+      .ml-nav { padding: 12px 14px; }
+      .ml-nav-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .ml-nav .ml-nav-btn { font-size: 12px; padding: 10px 7px; }
+    }
+
+  </style>
+
+
+<title>Mini-Ligue — Saisie TEST</title>
+</head>
+
+
+
+
+<body>
+
+<header class="ml-topbar">
+  <div class="ml-header-main">
+    <div class="ml-header-text">
+      <div class="ml-brand">TC Thonon Squash</div>
+      <h1 class="ml-title">Mini-Ligue - Saisie Résultats</h1>
+    </div>
+    <img class="ml-logo"
+         src="../assets/icons/TC-Thonon-Squash-Logo.png"
+         alt="TC Thonon Squash">
+  </div>
+</header>
+
+<nav class="ml-nav" aria-label="Navigation Mini-Ligue"><div class="ml-nav-inner">
+<a class="ml-nav-btn" href="../">🏠 Accueil</a>
+<a class="ml-nav-btn" href="../Infos/">ℹ️ Infos</a>
+<a class="ml-nav-btn" href="../Dashboards/">📊 Voir classements &amp; résultats</a>
+<a class="ml-nav-btn active" href="./">✏️ Saisir un résultat</a>
+<a class="ml-nav-btn" href="../SignInSignOut/">👤 S'inscrire / Se désinscrire</a>
+<a class="ml-nav-btn" href="../RGPD/">🛡️ RGPD</a>
+</div></nav>
+
+
+
+
+
+
+<div
+  class="app"
+  id="app"
+>
+
+
+
+
+  <!-- =====================================
+       CHOIX DU MATCH
+  ====================================== -->
+  <div class="select-card">
+
+
+    <label class="label">
+
+
+      Match à saisir
+
+
+    </label>
+
+
+
+
+    <select
+      id="matchSelect"
+      onchange="selectionMatch()"
+    >
+
+
+      <option value="">
+        Chargement des matchs...
+      </option>
+
+
+    </select>
+
+
+  </div>
+
+
+
+
+  <!-- =====================================
+       EMAIL
+  ====================================== -->
+
+
+  <div class="select-card">
+
+
+    <label class="label">
+      Votre adresse email *
+    </label>
+
+
+    <input
+      id="email"
+      type="email"
+      placeholder="prenom.nom@email.com"
+      autocomplete="email"
+      required
+      style="
+        width:100%;
+        height:50px;
+        font-size:16px;
+        text-align:left;
+        padding:0 14px;
+        font-weight:normal;
+      "
+    >
+
+    <div class="email-privacy">
+      Votre adresse e-mail est utilisée uniquement pour identifier l'auteur de la saisie
+      et permettre la validation du résultat. Elle n'est pas affichée sur le classement public.
+      <a
+        href="../RGPD/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >RGPD - En savoir plus</a>
+    </div>
+
+
+
+  </div>
+
+
+
+
+  <!-- =====================================
+       FORFAIT
+  ====================================== -->
+
+
+  <div class="select-card">
+
+
+    <label class="label">
+      Forfait
+    </label>
+
+
+    <select
+      id="forfaitSelect"
+      onchange="gererForfait()"
+      disabled
+    >
+      <option value="">
+        Aucun forfait
+      </option>
+    </select>
+
+
+  </div>
+
+
+
+
+
+
+  <!-- =====================================
+       MATCH
+  ====================================== -->
+
+
+
+
+  <div
+    id="matchArea"
+    class="scoreboard hidden"
+  >
+
+
+
+
+    <div
+      class="match-info"
+      id="matchInfo"
+    >
+    </div>
+
+
+
+
+    <!-- JOUEURS -->
+
+
+
+
+    <div class="players">
+
+
+      <div
+        class="player"
+        id="joueurA"
+      >
+      </div>
+
+
+
+
+      <div class="versus">
+
+
+        VS
+
+
+      </div>
+
+
+
+
+      <div
+        class="player"
+        id="joueurB"
+      >
+      </div>
+
+
+    </div>
+
+
+
+
+    <!-- SCORE MATCH -->
+
+
+
+
+    <div class="match-score">
+
+
+      <div
+        class="big-score"
+        id="scoreA"
+      >
+        0
+      </div>
+
+
+
+
+      <div class="separator">
+
+
+        —
+
+
+      </div>
+
+
+
+
+      <div
+        class="big-score"
+        id="scoreB"
+      >
+        0
+      </div>
+
+
+    </div>
+
+
+
+
+    <!-- JEUX -->
+
+
+
+
+    <div class="games">
+
+
+
+
+      <div class="game-header">
+
+
+        <div>
+          Jeu
+        </div>
+
+
+        <div
+          id="headerA"
+          style="text-align:center;"
+        >
+          A
+        </div>
+
+
+        <div></div>
+
+
+        <div
+          id="headerB"
+          style="text-align:center;"
+        >
+          B
+        </div>
+
+
+      </div>
+
+
+
+
+      <!-- JEU 1 -->
+
+
+
+
+      <div
+        class="game-row"
+        id="row1"
+      >
+
+
+        <div class="game-number">
+          Jeu 1
+        </div>
+
+
+        <input
+          id="a1"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(1)"
+        >
+
+
+        <div class="dash">
+          —
+        </div>
+
+
+        <input
+          id="b1"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(1)"
+        >
+
+
+      </div>
+
+
+
+
+      <!-- JEU 2 -->
+
+
+
+
+      <div
+        class="game-row"
+        id="row2"
+      >
+
+
+        <div class="game-number">
+          Jeu 2
+        </div>
+
+
+        <input
+          id="a2"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(2)"
+        >
+
+
+        <div class="dash">
+          —
+        </div>
+
+
+        <input
+          id="b2"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(2)"
+        >
+
+
+      </div>
+
+
+
+
+      <!-- JEU 3 -->
+
+
+
+
+      <div
+        class="game-row"
+        id="row3"
+      >
+
+
+        <div class="game-number">
+          Jeu 3
+        </div>
+
+
+        <input
+          id="a3"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(3)"
+        >
+
+
+        <div class="dash">
+          —
+        </div>
+
+
+        <input
+          id="b3"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(3)"
+        >
+
+
+      </div>
+
+
+
+
+      <!-- JEU 4 -->
+
+
+
+
+      <div
+        class="game-row hidden"
+        id="row4"
+      >
+
+
+        <div class="game-number">
+          Jeu 4
+        </div>
+
+
+        <input
+          id="a4"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(4)"
+        >
+
+
+        <div class="dash">
+          —
+        </div>
+
+
+        <input
+          id="b4"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(4)"
+        >
+
+
+      </div>
+
+
+
+
+      <!-- JEU 5 -->
+
+
+
+
+      <div
+        class="game-row hidden"
+        id="row5"
+      >
+
+
+        <div class="game-number">
+          Jeu 5
+        </div>
+
+
+        <input
+          id="a5"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(5)"
+        >
+
+
+        <div class="dash">
+          —
+        </div>
+
+
+        <input
+          id="b5"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          oninput="scoreChange(5)"
+        >
+
+
+      </div>
+
+
+    </div>
+
+
+
+
+    <!-- ACTION -->
+
+
+
+
+    <div class="actions">
+
+
+
+
+      <button
+        id="submitButton"
+        onclick="envoyerScore()"
+        disabled
+      >
+
+
+        ENREGISTRER LE RÉSULTAT
+
+
+      </button>
+
+
+
+
+      <div
+        id="message"
+        class="message"
+      >
+      </div>
+
+
+
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+
+
+
+
+<script>
+
+// Adaptateur PWA : conserve le JavaScript original et ses validations locales.
+const API_SAISIE_TEST = "https://script.google.com/macros/s/AKfycbxZ6FPwZuA0xFr4l2AnE7hMDWIjV-nxvFnVMwsnCZph84YWpUifkJ-6VMDChBOErWtQRg/exec";
+const attente = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function apiGet(params) {
+  if (!navigator.onLine) throw new Error("Connexion Internet nécessaire pour la saisie.");
+  const u = new URL(API_SAISIE_TEST);
+  Object.entries(params).forEach(([k,v]) => u.searchParams.set(k,v));
+  const response = await fetch(u.toString(), {cache:"no-store"});
+  if (!response.ok) throw new Error("API inaccessible : HTTP " + response.status);
+  return response.json();
+}
+async function soumettrePwa(matchId, jeux, email, forfait) {
+  if (!navigator.onLine) throw new Error("Connexion Internet nécessaire pour envoyer le résultat.");
+  const receipt = crypto.randomUUID();
+  const params = new URLSearchParams({action:"soumettre",matchId:String(matchId),jeux:JSON.stringify(jeux),email,forfait,receipt});
+  // Réponse POST opaque ; ne jamais conclure au succès à ce stade.
+  await fetch(API_SAISIE_TEST,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:params});
+  for (let i=0;i<15;i++) {
+    await attente(i<4?900:1600);
+    try {
+      const r=await apiGet({action:"statut",receipt});
+      if (r.pending) continue;
+      if (!r.success) throw new Error(r.error || "Enregistrement refusé par le serveur.");
+      return r;
+    } catch(e) {
+      if (/refusé|invalide|déjà|introuvable|indisponible|incomplet|terminé|impossible|obligatoire|Jeu|Match|Score|résultat/i.test(e.message)) throw e;
+    }
+  }
+  throw new Error("Confirmation non reçue. Vérifie ValidationForm avant toute nouvelle tentative pour éviter un doublon.");
+}
+const google = {script:{run:{
+  withSuccessHandler(success) {return {
+    withFailureHandler(failure) {return {
+      getMatchsAPlanifier(){apiGet({action:"matchs"}).then(r=>{if(!r.success) throw Error(r.error);success(r.matchs)}).catch(failure)},
+      enregistrerResultat(id,jeux,email,forfait){soumettrePwa(id,jeux,email,forfait).then(success).catch(failure)},
+      getWebAppUrl(){success(window.location.href)}
+    }}
+  }}
+}}};
+
+
+
+
+
+// =====================================================
+// VARIABLES
+// =====================================================
+
+
+
+
+let matchs = [];
+
+
+let matchSelectionne = null;
+
+
+
+
+
+
+// =====================================================
+// CHARGEMENT
+// =====================================================
+
+
+
+
+function chargerMatchs() {
+
+
+
+
+  google.script.run
+
+
+
+
+    .withSuccessHandler(function(data) {
+
+
+
+
+      matchs = data || [];
+
+
+
+
+      const select =
+        document.getElementById(
+          "matchSelect"
+        );
+
+
+
+
+      select.innerHTML =
+        '<option value="">Choisir un match...</option>';
+
+
+
+
+      matchs.forEach(function(match) {
+
+
+
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+
+
+        option.value =
+          String(match.id);
+
+
+
+
+        option.textContent =
+
+
+          "Poule " +
+          match.poule +
+          " — " +
+          match.joueurA +
+          " vs " +
+          match.joueurB;
+
+
+
+
+        select.appendChild(option);
+
+
+      });
+
+
+
+
+      if (matchs.length === 0) {
+
+
+
+
+        select.innerHTML =
+
+
+          '<option value="">Aucun match à saisir</option>';
+
+
+      }
+
+
+    })
+
+
+
+
+    .withFailureHandler(function(error) {
+
+
+      const select =
+        document.getElementById(
+          "matchSelect"
+        );
+
+
+      select.innerHTML =
+        '<option value="">Erreur de chargement des matchs</option>';
+
+
+      select.disabled = true;
+
+
+      alert(
+        "Erreur lors du chargement des matchs :\n\n" +
+        (error && error.message
+          ? error.message
+          : error)
+      );
+
+
+    })
+
+
+
+
+    .getMatchsAPlanifier();
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// SELECTION MATCH
+// =====================================================
+
+
+
+
+function selectionMatch() {
+
+
+  const id =
+    document.getElementById(
+      "matchSelect"
+    ).value;
+
+
+  matchSelectionne =
+    matchs.find(
+      m =>
+        String(m.id) === String(id)
+    );
+
+
+  const area =
+    document.getElementById(
+      "matchArea"
+    );
+
+
+  const forfaitSelect =
+    document.getElementById(
+      "forfaitSelect"
+    );
+
+
+
+
+  if (!matchSelectionne) {
+
+
+    area.classList.add(
+      "hidden"
+    );
+
+
+    forfaitSelect.innerHTML =
+      '<option value="">Aucun forfait</option>';
+
+
+    forfaitSelect.disabled = true;
+
+
+    reinitialiserScores();
+
+
+    return;
+  }
+
+
+
+
+  // Toujours repartir d'un état propre
+  // quand un nouveau match est sélectionné.
+  reinitialiserScores();
+
+
+
+
+  document.getElementById(
+    "joueurA"
+  ).textContent =
+    matchSelectionne.joueurA;
+
+
+
+
+  document.getElementById(
+    "joueurB"
+  ).textContent =
+    matchSelectionne.joueurB;
+
+
+
+
+  document.getElementById(
+    "headerA"
+  ).textContent =
+    prenomCourt(
+      matchSelectionne.joueurA
+    );
+
+
+
+
+  document.getElementById(
+    "headerB"
+  ).textContent =
+    prenomCourt(
+      matchSelectionne.joueurB
+    );
+
+
+
+
+  // Liste Forfait :
+  // aucun / joueur A / joueur B
+  forfaitSelect.innerHTML =
+    '<option value="">Aucun forfait</option>';
+
+
+  const optionA =
+    document.createElement(
+      "option"
+    );
+
+
+  optionA.value =
+    matchSelectionne.joueurA;
+
+
+  optionA.textContent =
+    matchSelectionne.joueurA;
+
+
+
+
+  const optionB =
+    document.createElement(
+      "option"
+    );
+
+
+  optionB.value =
+    matchSelectionne.joueurB;
+
+
+  optionB.textContent =
+    matchSelectionne.joueurB;
+
+
+
+
+  forfaitSelect.appendChild(
+    optionA
+  );
+
+
+  forfaitSelect.appendChild(
+    optionB
+  );
+
+
+  forfaitSelect.disabled = false;
+
+
+
+
+  let infos = "";
+
+
+
+
+  if (matchSelectionne.phase) {
+
+
+    infos +=
+      matchSelectionne.phase;
+  }
+
+
+
+
+  if (matchSelectionne.poule) {
+
+
+    if (infos) {
+      infos += " · ";
+    }
+
+
+    infos +=
+      "Poule " +
+      matchSelectionne.poule;
+  }
+
+
+
+
+  infos +=
+    " · Match " +
+    matchSelectionne.id;
+
+
+
+
+  document.getElementById(
+    "matchInfo"
+  ).textContent =
+    infos;
+
+
+
+
+  area.classList.remove(
+    "hidden"
+  );
+}
+
+
+
+
+
+
+// =====================================================
+// NOM COURT
+// =====================================================
+
+
+
+
+function prenomCourt(nom) {
+
+
+
+
+  if (!nom) {
+    return "";
+  }
+
+
+
+
+  const parts =
+    String(nom)
+      .trim()
+      .split(/\s+/);
+
+
+
+
+  return parts[0];
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// RESET
+// =====================================================
+
+
+
+
+function reinitialiserScores() {
+
+
+  for (
+    let i = 1;
+    i <= 5;
+    i++
+  ) {
+
+
+    const champA =
+      document.getElementById(
+        "a" + i
+      );
+
+
+    const champB =
+      document.getElementById(
+        "b" + i
+      );
+
+
+    champA.disabled = false;
+    champB.disabled = false;
+
+
+    champA.value = "";
+    champB.value = "";
+  }
+
+
+
+
+  document.getElementById(
+    "scoreA"
+  ).textContent = "0";
+
+
+
+
+  document.getElementById(
+    "scoreB"
+  ).textContent = "0";
+
+
+
+
+  document.getElementById(
+    "row4"
+  ).classList.add(
+    "hidden"
+  );
+
+
+
+
+  document.getElementById(
+    "row5"
+  ).classList.add(
+    "hidden"
+  );
+
+
+
+
+  const forfaitSelect =
+    document.getElementById(
+      "forfaitSelect"
+    );
+
+
+  if (
+    forfaitSelect &&
+    forfaitSelect.options.length > 0
+  ) {
+    forfaitSelect.value = "";
+  }
+
+
+
+
+  document.getElementById(
+    "submitButton"
+  ).disabled = true;
+
+
+
+
+  effacerMessage();
+}
+
+
+
+
+
+
+// =====================================================
+// GESTION FORFAIT
+// =====================================================
+
+
+
+
+function gererForfait() {
+
+
+  if (!matchSelectionne) {
+    return;
+  }
+
+
+
+
+  const forfait =
+    document.getElementById(
+      "forfaitSelect"
+    ).value;
+
+
+
+
+  const champsScores = [
+    "a1", "b1",
+    "a2", "b2",
+    "a3", "b3",
+    "a4", "b4",
+    "a5", "b5"
+  ];
+
+
+
+
+  // -----------------------------------------
+  // Aucun forfait
+  // -----------------------------------------
+
+
+  if (forfait === "") {
+
+
+    champsScores.forEach(
+      function(id) {
+
+
+        const champ =
+          document.getElementById(id);
+
+
+        champ.disabled = false;
+        champ.value = "";
+      }
+    );
+
+
+
+
+    document.getElementById(
+      "scoreA"
+    ).textContent = "0";
+
+
+    document.getElementById(
+      "scoreB"
+    ).textContent = "0";
+
+
+
+
+    document.getElementById(
+      "row4"
+    ).classList.add(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "row5"
+    ).classList.add(
+      "hidden"
+    );
+
+
+
+
+    document.getElementById(
+      "submitButton"
+    ).disabled = true;
+
+
+
+
+    effacerMessage();
+
+
+    return;
+  }
+
+
+
+
+  // -----------------------------------------
+  // Forfait sélectionné
+  // -----------------------------------------
+
+
+  // On vide tout avant de poser les scores.
+  champsScores.forEach(
+    function(id) {
+
+
+      const champ =
+        document.getElementById(id);
+
+
+      champ.disabled = false;
+      champ.value = "";
+    }
+  );
+
+
+
+
+  // Joueur A forfait :
+  // joueur B gagne 3-0.
+  if (
+    forfait ===
+    matchSelectionne.joueurA
+  ) {
+
+
+    document.getElementById("a1").value = 0;
+    document.getElementById("b1").value = 11;
+
+
+    document.getElementById("a2").value = 0;
+    document.getElementById("b2").value = 11;
+
+
+    document.getElementById("a3").value = 0;
+    document.getElementById("b3").value = 11;
+  }
+
+
+
+
+  // Joueur B forfait :
+  // joueur A gagne 3-0.
+  if (
+    forfait ===
+    matchSelectionne.joueurB
+  ) {
+
+
+    document.getElementById("a1").value = 11;
+    document.getElementById("b1").value = 0;
+
+
+    document.getElementById("a2").value = 11;
+    document.getElementById("b2").value = 0;
+
+
+    document.getElementById("a3").value = 11;
+    document.getElementById("b3").value = 0;
+  }
+
+
+
+
+  // Jeux 4 et 5 jamais utilisés
+  // en cas de forfait.
+  document.getElementById(
+    "row4"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "row5"
+  ).classList.add(
+    "hidden"
+  );
+
+
+
+
+  // Verrouille les 10 champs.
+  // Les jeux 4 et 5 restent en plus masqués.
+  champsScores.forEach(
+    function(id) {
+
+
+      document.getElementById(
+        id
+      ).disabled = true;
+    }
+  );
+
+
+
+
+  effacerMessage();
+
+
+  calculerMatch();
+}
+
+
+
+
+
+
+// =====================================================
+// MODIFICATION SCORE
+// =====================================================
+
+
+
+
+function scoreChange(numeroJeu) {
+
+
+
+
+  effacerMessage();
+
+
+
+
+  calculerMatch();
+
+
+
+
+  gererJeuxVisibles();
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// COMPTER LES JEUX
+// =====================================================
+
+
+
+
+function calculerMatch() {
+
+
+
+
+  let scoreA = 0;
+
+
+  let scoreB = 0;
+
+
+
+
+  for (
+    let i = 1;
+    i <= 5;
+    i++
+  ) {
+
+
+
+
+    const a =
+      document.getElementById(
+        "a" + i
+      ).value;
+
+
+
+
+    const b =
+      document.getElementById(
+        "b" + i
+      ).value;
+
+
+
+
+    if (
+      a === "" ||
+      b === ""
+    ) {
+
+
+      continue;
+
+
+    }
+
+
+
+
+    const na = Number(a);
+
+
+    const nb = Number(b);
+
+
+
+
+    if (na > nb) {
+
+
+      scoreA++;
+
+
+    } else if (nb > na) {
+
+
+      scoreB++;
+
+
+    }
+
+
+  }
+
+
+
+
+  document.getElementById(
+    "scoreA"
+  ).textContent =
+    scoreA;
+
+
+
+
+  document.getElementById(
+    "scoreB"
+  ).textContent =
+    scoreB;
+
+
+
+
+  document.getElementById(
+    "submitButton"
+  ).disabled =
+    !(scoreA === 3 || scoreB === 3);
+
+
+
+
+  return {
+    scoreA,
+    scoreB
+  };
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// JEUX 4 ET 5 DYNAMIQUES
+// =====================================================
+
+
+
+
+function gererJeuxVisibles() {
+
+
+
+
+  const jeu1 =
+    jeuComplet(1);
+
+
+  const jeu2 =
+    jeuComplet(2);
+
+
+  const jeu3 =
+    jeuComplet(3);
+
+
+
+
+  const scoreApres3 =
+    scoreJusqua(3);
+
+
+
+
+  const row4 =
+    document.getElementById(
+      "row4"
+    );
+
+
+
+
+  const row5 =
+    document.getElementById(
+      "row5"
+    );
+
+
+
+
+  // Jeu 4 seulement quand les 3 premiers
+  // jeux sont remplis et qu'aucun joueur
+  // n'a encore gagné 3-0.
+
+
+  if (
+    jeu1 &&
+    jeu2 &&
+    jeu3 &&
+    scoreApres3.scoreA < 3 &&
+    scoreApres3.scoreB < 3
+  ) {
+
+
+    row4.classList.remove(
+      "hidden"
+    );
+
+
+  } else {
+
+
+
+
+    row4.classList.add(
+      "hidden"
+    );
+
+
+
+
+    document.getElementById(
+      "a4"
+    ).value = "";
+
+
+
+
+    document.getElementById(
+      "b4"
+    ).value = "";
+
+
+
+
+    row5.classList.add(
+      "hidden"
+    );
+
+
+
+
+    document.getElementById(
+      "a5"
+    ).value = "";
+
+
+
+
+    document.getElementById(
+      "b5"
+    ).value = "";
+
+
+  }
+
+
+
+
+  // Jeu 5 seulement si après 4 jeux :
+  // score 2-2
+
+
+  if (jeuComplet(4)) {
+
+
+
+
+    const scoreApres4 =
+      scoreJusqua(4);
+
+
+
+
+    if (
+      scoreApres4.scoreA === 2 &&
+      scoreApres4.scoreB === 2
+    ) {
+
+
+
+
+      row5.classList.remove(
+        "hidden"
+      );
+
+
+
+
+    } else {
+
+
+
+
+      row5.classList.add(
+        "hidden"
+      );
+
+
+
+
+      document.getElementById(
+        "a5"
+      ).value = "";
+
+
+
+
+      document.getElementById(
+        "b5"
+      ).value = "";
+
+
+    }
+
+
+  }
+
+
+
+
+  calculerMatch();
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// JEU COMPLET
+// =====================================================
+
+
+
+
+function jeuComplet(i) {
+
+
+
+
+  return (
+
+
+    document.getElementById(
+      "a" + i
+    ).value !== ""
+
+
+    &&
+
+
+    document.getElementById(
+      "b" + i
+    ).value !== ""
+
+
+  );
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// SCORE JUSQU'A UN JEU
+// =====================================================
+
+
+
+
+function scoreJusqua(maxJeu) {
+
+
+
+
+  let scoreA = 0;
+
+
+  let scoreB = 0;
+
+
+
+
+  for (
+    let i = 1;
+    i <= maxJeu;
+    i++
+  ) {
+
+
+
+
+    if (!jeuComplet(i)) {
+
+
+      continue;
+
+
+    }
+
+
+
+
+    const a =
+      Number(
+        document.getElementById(
+          "a" + i
+        ).value
+      );
+
+
+
+
+    const b =
+      Number(
+        document.getElementById(
+          "b" + i
+        ).value
+      );
+
+
+
+
+    if (a > b) {
+
+
+      scoreA++;
+
+
+    } else if (b > a) {
+
+
+      scoreB++;
+
+
+    }
+
+
+  }
+
+
+
+
+  return {
+    scoreA,
+    scoreB
+  };
+
+
+}
+
+
+// =====================================================
+// LINK DASHBOARDS
+// =====================================================
+function ouvrirInfos() {
+  window.location.href =
+    "https://tcthononsquash.github.io/Mini-Ligue/Infos";
+}
+
+function ouvrirSaisie() {
+  // La page de saisie est deja ouverte.
+  window.scrollTo(0, 0);
+}
+
+function ouvrirInscription() {
+  window.location.href =
+    "https://tcthononsquash.github.io/Mini-Ligue/SignInSignOut";
+}
+
+function ouvrirRGPD() {
+  window.location.href =
+    "https://tcthononsquash.github.io/Mini-Ligue/RGPD";
+}
+
+  function ouvrirDashboard() {
+
+
+    window.location.href =
+      "https://script.google.com/macros/s/AKfycbyLye09_FYYO8qglTMFIwm6gJsVtvvplCEPxI7ViVB8vC7_qxs7D7QKHIvJMkuUXnBY/exec";
+  }
+// =====================================================
+// ENVOI
+// =====================================================
+
+
+
+
+function envoyerScore() {
+
+
+
+
+  if (!matchSelectionne) {
+
+
+    return;
+
+
+  }
+
+
+
+
+  effacerMessage();
+
+
+
+
+  const email =
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+
+
+
+  if (email === "") {
+
+
+    afficherErreur(
+      "Merci de saisir votre adresse email."
+    );
+
+
+    document.getElementById(
+      "email"
+    ).focus();
+
+
+    return;
+  }
+
+
+
+
+  const emailRegex =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+
+
+  if (!emailRegex.test(email)) {
+
+
+    afficherErreur(
+      "L'adresse email saisie n'est pas valide."
+    );
+
+
+    document.getElementById(
+      "email"
+    ).focus();
+
+
+    return;
+  }
+
+
+
+
+  const forfait =
+    document.getElementById(
+      "forfaitSelect"
+    ).value;
+
+
+
+
+  const jeux = [];
+
+
+
+
+  for (
+    let i = 1;
+    i <= 5;
+    i++
+  ) {
+
+
+
+
+    const a =
+      document.getElementById(
+        "a" + i
+      ).value;
+
+
+
+
+    const b =
+      document.getElementById(
+        "b" + i
+      ).value;
+
+
+
+
+    // jeu entièrement vide :
+    // on ignore
+
+
+    if (
+      a === "" &&
+      b === ""
+    ) {
+
+
+      continue;
+
+
+    }
+
+
+
+
+    // un seul champ rempli
+
+
+    if (
+      a === "" ||
+      b === ""
+    ) {
+
+
+
+
+      afficherErreur(
+
+
+        "Complète les deux scores du jeu " +
+        i +
+        "."
+
+
+      );
+
+
+
+
+      return;
+
+
+    }
+
+
+
+
+    jeux.push({
+
+
+      a: Number(a),
+      b: Number(b)
+
+
+    });
+
+
+  }
+
+
+
+
+  // Vérification locale
+  // avant envoi au serveur
+
+
+
+
+  let validationLocale;
+
+
+
+
+  try {
+
+
+
+
+    validationLocale =
+      verifierMatchLocal(jeux);
+
+
+
+
+  } catch(error) {
+
+
+
+
+    afficherErreur(
+      error.message
+    );
+
+
+
+
+    return;
+
+
+  }
+
+
+
+
+  const button =
+    document.getElementById(
+      "submitButton"
+    );
+
+
+
+
+  button.disabled =
+    true;
+
+
+
+
+  button.textContent =
+    "ENREGISTREMENT...";
+
+
+
+
+  google.script.run
+
+
+
+
+    .withSuccessHandler(
+      function(result) {
+
+
+
+
+        afficherSucces(
+          result
+        );
+
+
+      }
+    )
+
+
+
+
+    .withFailureHandler(
+      function(error) {
+
+
+
+
+        button.disabled =
+          false;
+
+
+
+
+        button.textContent =
+          "ENREGISTRER LE RÉSULTAT";
+
+
+
+
+        afficherErreur(
+          error.message
+        );
+
+
+      }
+    )
+
+
+
+
+    .enregistrerResultat(
+
+
+      matchSelectionne.id,
+
+
+      jeux,
+
+
+      email,
+
+
+      forfait
+
+
+    );
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// VERIFICATION COTE NAVIGATEUR
+// =====================================================
+
+
+
+
+function verifierMatchLocal(jeux) {
+
+
+
+
+  let scoreA = 0;
+
+
+  let scoreB = 0;
+
+
+
+
+  jeux.forEach(
+    function(jeu, index) {
+
+
+
+
+      verifierJeuLocal(
+        jeu.a,
+        jeu.b,
+        index + 1
+      );
+
+
+
+
+      if (jeu.a > jeu.b) {
+
+
+        scoreA++;
+
+
+      } else {
+
+
+        scoreB++;
+
+
+      }
+
+
+
+
+      if (
+        (scoreA === 3 || scoreB === 3) &&
+        index < jeux.length - 1
+      ) {
+
+
+
+
+        throw new Error(
+
+
+          "Le match était déjà terminé avant le jeu " +
+          (index + 2) +
+          "."
+
+
+        );
+
+
+      }
+
+
+    }
+  );
+
+
+
+
+  if (
+    scoreA !== 3 &&
+    scoreB !== 3
+  ) {
+
+
+
+
+    throw new Error(
+
+
+      "Le match doit se terminer par 3 jeux gagnés."
+
+
+    );
+
+
+  }
+
+
+
+
+  return {
+    scoreA,
+    scoreB
+  };
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// VERIFICATION SCORE JEU LOCAL
+// =====================================================
+
+
+
+
+function verifierJeuLocal(
+  a,
+  b,
+  numero
+) {
+
+
+
+
+  if (
+    !Number.isInteger(a) ||
+    !Number.isInteger(b) ||
+    a < 0 ||
+    b < 0
+  ) {
+
+
+
+
+    throw new Error(
+
+
+      "Score invalide au jeu " +
+      numero +
+      "."
+
+
+    );
+
+
+  }
+
+
+
+
+  if (a === b) {
+
+
+
+
+    throw new Error(
+
+
+      "Le jeu " +
+      numero +
+      " ne peut pas finir à égalité."
+
+
+    );
+
+
+  }
+
+
+
+
+  const gagnant =
+    Math.max(a, b);
+
+
+
+
+  const perdant =
+    Math.min(a, b);
+
+
+
+
+  if (
+    gagnant === 11 &&
+    perdant <= 9
+  ) {
+
+
+    return;
+
+
+  }
+
+
+
+
+  if (
+    gagnant >= 12 &&
+    gagnant - perdant === 2
+  ) {
+
+
+    return;
+
+
+  }
+
+
+
+
+  throw new Error(
+
+
+    "Score impossible au jeu " +
+    numero +
+    " : " +
+    a +
+    " - " +
+    b
+
+
+  );
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// SUCCESS
+// =====================================================
+
+
+
+
+function afficherSucces(result) {
+
+
+
+
+  document.getElementById(
+    "app"
+  ).innerHTML = `
+
+
+
+
+    <div class="success">
+
+
+
+
+      <div class="success-check">
+
+
+        ✅
+
+
+      </div>
+
+
+
+
+      <h2>
+
+
+        Résultat envoyé
+
+
+      </h2>
+
+
+
+
+      <div class="success-score">
+
+
+        ${result.joueurA}
+
+
+        ${result.scoreA}
+
+
+        —
+
+
+        ${result.scoreB}
+
+
+        ${result.joueurB}
+
+
+      </div>
+
+
+
+
+      <p>
+
+
+        Le résultat est maintenant
+        en attente de validation.
+
+
+      </p>
+
+
+
+
+      <button
+        class="new-match"
+        onclick="saisirAutreMatch()"
+      >
+
+
+        SAISIR UN AUTRE MATCH
+
+
+      </button>
+
+
+
+
+    </div>
+
+
+  `;
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// SAISIR UN AUTRE MATCH
+// =====================================================
+
+
+
+
+function saisirAutreMatch() {
+
+
+  google.script.run
+
+
+    .withSuccessHandler(
+      function(url) {
+
+
+        window.location.href =
+          url;
+      }
+    )
+
+
+    .withFailureHandler(
+      function(error) {
+
+
+        alert(
+          "Impossible de revenir au formulaire :\n\n" +
+          (error && error.message
+            ? error.message
+            : error)
+        );
+      }
+    )
+
+
+    .getWebAppUrl();
+}
+
+
+
+
+
+
+// =====================================================
+// MESSAGES
+// =====================================================
+
+
+
+
+function afficherErreur(message) {
+
+
+
+
+  const element =
+    document.getElementById(
+      "message"
+    );
+
+
+
+
+  element.className =
+    "message error";
+
+
+
+
+  element.textContent =
+    message;
+
+
+}
+
+
+
+
+
+
+function effacerMessage() {
+
+
+
+
+  const element =
+    document.getElementById(
+      "message"
+    );
+
+
+
+
+  if (!element) {
+    return;
+  }
+
+
+
+
+  element.className =
+    "message";
+
+
+
+
+  element.textContent =
+    "";
+
+
+}
+
+
+
+
+
+
+// =====================================================
+// INITIALISATION
+// =====================================================
+
+
+
+
+chargerMatchs();
+
+
+
+
+</script>
+
+
+
+
+</body>
+
+
+</html>
+
 
