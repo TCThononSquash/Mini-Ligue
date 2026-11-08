@@ -2,18 +2,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" type="image/png" href="./assets/icons/icon-192.png">
-  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0f17">
+
   <title>TC Thonon Squash - Mini-Ligue</title>
 
+  <!-- Configuration PWA -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon"
+        type="image/png"
+        href="./assets/icons/icon-192.png">
+  <link rel="apple-touch-icon"
+        href="./assets/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable"
+        content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -77,7 +88,8 @@
       max-width: 1450px;
       margin: auto;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns:
+        repeat(6, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -141,15 +153,40 @@
       font-size: 12px;
     }
 
+    /* Tablettes */
+    @media (min-width: 621px) and (max-width: 950px) {
+      .ml-nav-inner {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* Mobiles */
     @media (max-width: 620px) {
-      .ml-topbar { padding: 16px 14px; }
-      .ml-title { font-size: 23px; }
-      .ml-logo { width: 58px; height: 58px; }
-      .ml-header-main { gap: 12px; }
-      .ml-nav { padding: 12px 14px; }
+      .ml-topbar {
+        padding: 16px 14px;
+      }
+
+      .ml-title {
+        font-size: 23px;
+      }
+
+      .ml-logo {
+        width: 58px;
+        height: 58px;
+      }
+
+      .ml-header-main {
+        gap: 12px;
+      }
+
+      .ml-nav {
+        padding: 12px 14px;
+      }
 
       .ml-nav-inner {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
         gap: 8px;
       }
 
@@ -158,19 +195,29 @@
         padding: 10px 7px;
       }
 
-      .app { padding: 12px; }
-      .card { padding: 55px 17px; }
+      .app {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 55px 17px;
+      }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- HEADER -->
   <header class="ml-topbar">
     <div class="ml-header-main">
       <div class="ml-header-text">
-        <div class="ml-brand">TC Thonon Squash</div>
-        <h1 class="ml-title">Mini-Ligue</h1>
+        <div class="ml-brand">
+          TC Thonon Squash
+        </div>
+        <h1 class="ml-title">
+          Mini-Ligue
+        </h1>
       </div>
 
       <img
@@ -180,8 +227,20 @@
     </div>
   </header>
 
-  <nav class="ml-nav" aria-label="Navigation Mini-Ligue">
+  <!-- NAVIGATION -->
+  <nav class="ml-nav"
+       aria-label="Navigation Mini-Ligue">
+
     <div class="ml-nav-inner">
+
+      <a class="ml-nav-btn" href="./">
+        🏠 Accueil
+      </a>
+
+      <a class="ml-nav-btn" href="./Infos/">
+        ℹ️ Infos
+      </a>
+
       <a class="ml-nav-btn" href="./Dashboards/">
         📊 Voir classements &amp; résultats
       </a>
@@ -197,9 +256,11 @@
       <a class="ml-nav-btn" href="./RGPD/">
         🛡️ RGPD
       </a>
+
     </div>
   </nav>
 
+  <!-- ACCUEIL -->
   <main class="app">
     <div class="card">
       <h2 class="home-title">
@@ -212,15 +273,21 @@
     </div>
   </main>
 
+  <!-- SERVICE WORKER -->
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
-          .catch(error => console.error('Service Worker :', error));
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("./service-worker.js")
+          .catch(error => {
+            console.error(
+              "Erreur Service Worker :",
+              error
+            );
+          });
       });
     }
   </script>
 
 </body>
 </html>
-
