@@ -1001,6 +1001,8 @@
 
 
 
+  <div id="saisieNetworkStatus" hidden role="status" style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;padding:12px;border-radius:12px;margin-bottom:14px;font-size:14px;font-weight:600;"></div>
+
   <!-- =====================================
        CHOIX DU MATCH
   ====================================== -->
@@ -1564,16 +1566,94 @@ async function soumettrePwa(matchId, jeux, email, forfait) {
   }
   throw new Error("Confirmation non reçue. Vérifie ValidationForm avant toute nouvelle tentative pour éviter un doublon.");
 }
+// Cache local des matchs : ne contient aucune adresse e-mail ni aucun score saisi.
+const MATCHS_CACHE_KEY = "tc-thonon-saisie-matchs-test-v1";
+let listeHorsLigne = false;
+function lireMatchsCache() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MATCHS_CACHE_KEY) || "null");
+    if (!saved || !Array.isArray(saved.matchs)) return null;
+    return saved;
+  } catch (_) { return null; }
+}
+function sauverMatchsCache(items) {
+  try { localStorage.setItem(MATCHS_CACHE_KEY, JSON.stringify({matchs:items, date:new Date().toISOString()})); }
+  catch (_) { /* Stockage indisponible : la saisie en ligne reste utilisable. */ }
+}
+function afficherEtatListe(horsLigne, date) {
+  listeHorsLigne = horsLigne;
+  const banner = document.getElementById("saisieNetworkStatus");
+  if (banner) {
+    banner.hidden = !horsLigne;
+    const dateLabel = date ? " (synchronisée le " + new Date(date).toLocaleString("fr-FR") + ")" : "";
+    banner.textContent = horsLigne
+      ? "Mode hors ligne — liste des matchs enregistrée" + dateLabel + ". Connexion requise pour envoyer un résultat."
+      : "";
+  }
+  const button = document.getElementById("submitButton");
+  if (button && (horsLigne || !navigator.onLine)) button.disabled = true;
+}
+function mettreAJourEtatEnvoi() {
+  const button = document.getElementById("submitButton");
+  if (!button || button.textContent.trim() === "ENREGISTREMENT...") return;
+  if (!navigator.onLine || listeHorsLigne) {
+    button.disabled = true;
+  } else if (matchSelectionne) {
+    // Recalcul local à partir des jeux déjà saisis.
+    try {
+      const jeux = [];
+      for (let i=1;i<=5;i++) {
+        const a=document.getElementById("a"+i).value;
+        const b=document.getElementById("b"+i).value;
+        if (a==="" && b==="") continue;
+        if (a==="" || b==="") {button.disabled=true;return;}
+        jeux.push({a:Number(a),b:Number(b)});
+      }
+      verifierMatchLocal(jeux);
+      button.disabled = false;
+    } catch (_) { button.disabled = true; }
+  }
+}
 const google = {script:{run:{
   withSuccessHandler(success) {return {
     withFailureHandler(failure) {return {
-      getMatchsAPlanifier(){apiGet({action:"matchs"}).then(r=>{if(!r.success) throw Error(r.error);success(r.matchs)}).catch(failure)},
-      enregistrerResultat(id,jeux,email,forfait){soumettrePwa(id,jeux,email,forfait).then(success).catch(failure)},
+      getMatchsAPlanifier(){
+        const cache = lireMatchsCache();
+        if (!navigator.onLine) {
+          if (cache) { afficherEtatListe(true,cache.date); success(cache.matchs); }
+          else failure(new Error("Aucune liste de matchs en cache. Connecte-toi une première fois pour la télécharger."));
+          return;
+        }
+        apiGet({action:"matchs"}).then(r=>{
+          if(!r.success || !Array.isArray(r.matchs)) throw Error(r.error || "Réponse API invalide");
+          sauverMatchsCache(r.matchs);
+          afficherEtatListe(false);
+          success(r.matchs);
+        }).catch(err=>{
+          if(cache) { afficherEtatListe(true,cache.date); success(cache.matchs); }
+          else failure(err);
+        });
+      },
+      enregistrerResultat(id,jeux,email,forfait){
+        if (!navigator.onLine || listeHorsLigne) {
+          failure(new Error("Connexion nécessaire. Actualise la liste des matchs avant d'envoyer le résultat."));
+          return;
+        }
+        soumettrePwa(id,jeux,email,forfait).then(success).catch(failure);
+      },
       getWebAppUrl(){success(window.location.href)}
     }}
   }}
 }}};
-
+window.addEventListener("offline",()=>{
+  const cache=lireMatchsCache();
+  afficherEtatListe(true,cache?.date);
+  mettreAJourEtatEnvoi();
+});
+window.addEventListener("online",()=>{
+  // Une liste précédemment affichée hors ligne n'est pas présumée à jour.
+  chargerMatchs();
+});
 
 
 
@@ -1618,6 +1698,7 @@ function chargerMatchs() {
 
 
       matchs = data || [];
+      const currentId = document.getElementById("matchSelect").value;
 
 
 
@@ -1676,6 +1757,15 @@ function chargerMatchs() {
 
 
 
+      if (currentId && matchs.some(m=>String(m.id)===currentId)) {
+        select.value=currentId;
+      } else if (matchSelectionne) {
+        select.value="";
+        selectionMatch();
+      }
+      select.disabled = false;
+      mettreAJourEtatEnvoi();
+
       if (matchs.length === 0) {
 
 
@@ -1711,12 +1801,9 @@ function chargerMatchs() {
       select.disabled = true;
 
 
-      alert(
-        "Erreur lors du chargement des matchs :\n\n" +
-        (error && error.message
-          ? error.message
-          : error)
-      );
+      const banner = document.getElementById("saisieNetworkStatus");
+      banner.hidden = false;
+      banner.textContent = "Impossible de charger les matchs : " + (error?.message || error);
 
 
     })
@@ -2441,7 +2528,7 @@ function calculerMatch() {
   document.getElementById(
     "submitButton"
   ).disabled =
-    !(scoreA === 3 || scoreB === 3);
+    !(scoreA === 3 || scoreB === 3) || !navigator.onLine || listeHorsLigne;
 
 
 
@@ -3612,5 +3699,4 @@ chargerMatchs();
 
 
 </html>
-
 
