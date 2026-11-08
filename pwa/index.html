@@ -1,1 +1,212 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+  <title>TC Thonon Squash - Mini-Ligue</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    /* Bandeau supérieur */
+    .ml-topbar {
+      background: #0b0f17;
+      color: #fff;
+      padding: 20px 28px 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    }
+
+    .ml-header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .ml-header-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .ml-brand {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .72;
+    }
+
+    .ml-title {
+      margin: 6px 0 0;
+      font-size: clamp(23px, 3.2vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -.03em;
+    }
+
+    .ml-logo {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    /* Navigation */
+    .ml-nav {
+      background: #fff;
+      border-bottom: 1px solid #dbe3ec;
+      padding: 14px 28px;
+    }
+
+    .ml-nav-inner {
+      max-width: 1450px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .ml-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #dbe3ec;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #334155;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+
+    .ml-nav-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .ml-nav-btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+    }
+
+    /* Accueil */
+    .app {
+      width: 100%;
+      max-width: 760px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 60px 26px;
+      box-shadow: 0 7px 25px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    .home-title {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.25;
+      letter-spacing: -.03em;
+      color: #0f172a;
+    }
+
+    .footer {
+      margin: 18px 0 4px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    @media (max-width: 620px) {
+      .ml-topbar { padding: 16px 14px; }
+      .ml-title { font-size: 23px; }
+      .ml-logo { width: 58px; height: 58px; }
+      .ml-header-main { gap: 12px; }
+      .ml-nav { padding: 12px 14px; }
+
+      .ml-nav-inner {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .ml-nav-btn {
+        font-size: 12px;
+        padding: 10px 7px;
+      }
+
+      .app { padding: 12px; }
+      .card { padding: 55px 17px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="ml-topbar">
+    <div class="ml-header-main">
+      <div class="ml-header-text">
+        <div class="ml-brand">TC Thonon Squash</div>
+        <h1 class="ml-title">Mini-Ligue</h1>
+      </div>
+
+      <img
+        class="ml-logo"
+        src="https://raw.githubusercontent.com/tennisclubthononsquash-ux/tc-thonon-squash/main/TC-Thonon-Squash-Logo.png"
+        alt="TC Thonon Squash">
+    </div>
+  </header>
+
+  <nav class="ml-nav" aria-label="Navigation Mini-Ligue">
+    <div class="ml-nav-inner">
+      <a class="ml-nav-btn" href="./Dashboards/">
+        📊 Voir classements &amp; résultats
+      </a>
+
+      <a class="ml-nav-btn" href="./Saisie/">
+        ✏️ Saisir un résultat
+      </a>
+
+      <a class="ml-nav-btn" href="./SignInSignOut/">
+        👤 S'inscrire / Se désinscrire
+      </a>
+
+      <a class="ml-nav-btn" href="./RGPD/">
+        🛡️ RGPD
+      </a>
+    </div>
+  </nav>
+
+  <main class="app">
+    <div class="card">
+      <h2 class="home-title">
+        TC Thonon Squash - Mini-Ligue
+      </h2>
+    </div>
+
+    <div class="footer">
+      TC Thonon Squash · Mini-Ligue
+    </div>
+  </main>
+
+</body>
+</html>
+
