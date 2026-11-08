@@ -1,1 +1,457 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+
+  <title>TC Thonon Squash - Mini-Ligue - RGPD</title>
+
+  <!-- Configuration PWA -->
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" type="image/png"
+        href="../assets/icons/icon-192.png">
+  <link rel="apple-touch-icon"
+        href="../assets/icons/icon-192.png">
+
+  <meta name="apple-mobile-web-app-capable"
+        content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    /* Contenu */
+    .app {
+      width: 100%;
+      max-width: 760px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 7px 25px rgba(0,0,0,.08);
+    }
+
+    .intro {
+      margin-top: 0;
+      font-size: 15px;
+    }
+
+    section {
+      padding: 18px 0;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    section:first-of-type {
+      margin-top: 8px;
+    }
+
+    h2 {
+      margin: 0 0 7px;
+      font-size: 16px;
+      color: #0f172a;
+    }
+
+    p {
+      margin: 0;
+      font-size: 15px;
+      color: #334155;
+    }
+
+    .card a {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .card a:hover {
+      color: #1d4ed8;
+    }
+
+    .card a:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .contact {
+      font-weight: 700;
+      color: #0f172a;
+      word-break: break-word;
+    }
+
+    .footer {
+      margin: 18px 0 4px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    /* Bandeau supérieur */
+    .ml-topbar {
+      background: #0b0f17;
+      color: #fff;
+      padding: 20px 28px 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    }
+
+    .ml-header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .ml-header-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .ml-brand {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .72;
+    }
+
+    .ml-title {
+      margin: 6px 0 0;
+      font-size: clamp(23px, 3.2vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -.03em;
+    }
+
+    .ml-logo {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    /* Navigation */
+    .ml-nav {
+      background: #fff;
+      border-bottom: 1px solid #dbe3ec;
+      padding: 14px 28px;
+    }
+
+    .ml-nav-inner {
+      max-width: 1450px;
+      margin: auto;
+      display: grid;
+      grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .ml-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-width: 0;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #dbe3ec;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #334155;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+
+    .ml-nav-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .ml-nav-btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+    }
+
+    /* Tablettes */
+    @media (min-width: 621px) and (max-width: 950px) {
+      .ml-nav-inner {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* Mobiles */
+    @media (max-width: 620px) {
+      .ml-topbar {
+        padding: 16px 14px;
+      }
+
+      .ml-title {
+        font-size: 23px;
+      }
+
+      .ml-logo {
+        width: 58px;
+        height: 58px;
+      }
+
+      .ml-header-main {
+        gap: 12px;
+      }
+
+      .ml-nav {
+        padding: 12px 14px;
+      }
+
+      .ml-nav-inner {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .ml-nav-btn {
+        font-size: 12px;
+        padding: 10px 7px;
+      }
+
+      .app {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 20px 17px;
+      }
+
+      section {
+        padding: 15px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="ml-topbar">
+    <div class="ml-header-main">
+      <div class="ml-header-text">
+        <div class="ml-brand">
+          TC Thonon Squash
+        </div>
+        <h1 class="ml-title">
+          Mini-Ligue - RGPD
+        </h1>
+      </div>
+
+      <img
+        class="ml-logo"
+        src="../assets/icons/TC-Thonon-Squash-Logo.png"
+        alt="TC Thonon Squash">
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="ml-nav"
+       aria-label="Navigation Mini-Ligue">
+
+    <div class="ml-nav-inner">
+
+      <a class="ml-nav-btn" href="../">
+        🏠 Accueil
+      </a>
+
+      <a class="ml-nav-btn" href="../Infos/">
+        ℹ️ Infos
+      </a>
+
+      <a class="ml-nav-btn" href="../Dashboards/">
+        📊 Voir classements &amp; résultats
+      </a>
+
+      <a class="ml-nav-btn" href="../Saisie/">
+        ✏️ Saisir un résultat
+      </a>
+
+      <a class="ml-nav-btn" href="../SignInSignOut/">
+        👤 S'inscrire / Se désinscrire
+      </a>
+
+      <a class="ml-nav-btn" href="./"
+         aria-current="page">
+        🛡️ RGPD
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- CONTENU RGPD -->
+  <main class="app">
+    <div class="card">
+
+      <p class="intro">
+        Dans le cadre de l'organisation de la
+        Mini Ligue, le TC Thonon Squash traite
+        certaines données personnelles concernant
+        les participants.
+      </p>
+
+      <section>
+        <h2>Données traitées</h2>
+        <p>
+          Nom, prénom, résultats des matchs,
+          classement et adresse e-mail utilisée
+          lors de la transmission d'un résultat.
+        </p>
+      </section>
+
+      <section>
+        <h2>Pourquoi utilisons-nous ces données ?</h2>
+        <p>
+          Elles permettent au club d'organiser
+          la Mini Ligue, d'identifier les participants,
+          d'enregistrer et valider les résultats,
+          d'établir le classement et de permettre
+          aux participants de suivre la compétition.
+        </p>
+      </section>
+
+      <section>
+        <h2>Publication des résultats</h2>
+        <p>
+          Le nom et le prénom des participants,
+          leurs résultats et leur classement
+          sont susceptibles d'être affichés
+          sur la Web App de la Mini Ligue.
+          Cette interface est accessible
+          publiquement sur Internet.
+        </p>
+      </section>
+
+      <section>
+        <h2>Adresse e-mail</h2>
+        <p>
+          L'adresse e-mail saisie lors de la
+          transmission d'un résultat sert
+          à identifier l'auteur de la saisie
+          et à permettre la gestion et la
+          validation du résultat.
+          Elle n'est pas affichée publiquement.
+        </p>
+      </section>
+
+      <section>
+        <h2>Accès aux données de gestion</h2>
+        <p>
+          La base de données de la Mini Ligue
+          est hébergée dans l'environnement
+          Google du club.
+          L'accès direct aux fichiers Google Drive
+          et Google Sheets concernés est limité
+          aux membres autorisés de la commission
+          squash.
+        </p>
+      </section>
+
+      <section>
+        <h2>Durée de conservation</h2>
+        <p>
+          Les données relatives aux participants
+          sont conservées au maximum
+          <strong>
+            3 ans après leur dernière participation
+          </strong>
+          à la Mini Ligue, puis supprimées
+          ou anonymisées lorsqu'elles ne sont
+          plus nécessaires.
+        </p>
+
+        <p style="margin-top:8px;">
+          Les données des soumissions de résultat,
+          contenant les adresses e-mail,
+          sont conservées
+          <strong>
+            1 an après la soumission
+          </strong>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Vos droits</h2>
+        <p>
+          Vous pouvez demander l'accès à vos données,
+          leur rectification, leur effacement
+          ou la limitation de leur traitement
+          lorsque ces droits sont applicables.
+          Selon la base juridique retenue,
+          d'autres droits peuvent également
+          s'appliquer.
+        </p>
+      </section>
+
+      <section>
+        <h2>Contact</h2>
+        <p>
+          Pour exercer vos droits ou poser
+          une question concernant vos données :
+        </p>
+
+        <p class="contact">
+          <a href="mailto:tennisclubthonon.squash@gmail.com">
+            tennisclubthonon.squash@gmail.com
+          </a>
+        </p>
+
+        <p style="margin-top:8px;">
+          Vous pouvez également adresser
+          une réclamation à la CNIL.
+        </p>
+      </section>
+
+    </div>
+
+    <div class="footer">
+      TC Thonon Squash · Mini Ligue · RGPD
+    </div>
+  </main>
+
+  <!-- SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("../service-worker.js")
+          .catch(error => {
+            console.error(
+              "Erreur Service Worker :",
+              error
+            );
+          });
+      });
+    }
+  </script>
+
+</body>
+</html>
+
