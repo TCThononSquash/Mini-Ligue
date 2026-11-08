@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini-Ligue - Test API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      padding: 25px;
+    }
+    button {
+      padding: 12px 20px;
+      cursor: pointer;
+    }
+    pre {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mini-Ligue - Test API</h1>
+  <button id="test">Tester la connexion</button>
+  <pre id="resultat">En attente du test...</pre>
+
+  <script>
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbxqOF9UpH1efIOTOrST56UXXAN6AktneNC7OCY12ybwR62hgPpJ_0WUdtFxW61m75emVw/exec";
+
+    document.getElementById("test")
+      .addEventListener("click", async () => {
+
+        const resultat =
+          document.getElementById("resultat");
+
+        resultat.textContent =
+          "Connexion en cours...";
+
+        try {
+          const response = await fetch(API_URL, {
+            method: "GET",
+            redirect: "follow",
+            cache: "no-store"
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              "HTTP " + response.status
+            );
+          }
+
+          const data = await response.json();
+
+          resultat.textContent =
+            JSON.stringify(data, null, 2);
+
+        } catch (error) {
+          resultat.textContent =
+            "Échec de la connexion :\n" +
+            error.message +
+            "\n\nVérifie la console F12 pour " +
+            "les détails (notamment CORS).";
+
+          console.error(error);
+        }
+      });
+  </script>
+</body>
+</html>
