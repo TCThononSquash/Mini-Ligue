@@ -1,10 +1,11 @@
-
-const CACHE_NAME = "tc-thonon-pwa-v1";
+const CACHE_NAME = "tc-thonon-pwa-v3";
 const BASE = "/Mini-Ligue/pwa/";
 
 const FILES_TO_CACHE = [
   BASE,
   BASE + "index.html",
+  BASE + "Infos/",
+  BASE + "Infos/index.html",
   BASE + "manifest.webmanifest",
   BASE + "assets/icons/icon-192.png",
   BASE + "assets/icons/icon-512.png",
