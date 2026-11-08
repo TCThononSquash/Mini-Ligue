@@ -7,7 +7,8 @@ const FILES_TO_CACHE = [
   BASE + "index.html",
   BASE + "manifest.webmanifest",
   BASE + "assets/icons/icon-192.png",
-  BASE + "assets/icons/icon-512.png"
+  BASE + "assets/icons/icon-512.png",
+  BASE + "assets/icons/TC-Thonon-Squash-Logo.png"
 ];
 
 // Installation : sauvegarder les fichiers essentiels.
