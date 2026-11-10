@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "tc-thonon-pwa-v10";
+const CACHE_NAME = "tc-thonon-pwa-v11";
 const BASE = "/Mini-Ligue/pwa/";
 
 const FILES_TO_CACHE = [
