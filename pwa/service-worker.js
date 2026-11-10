@@ -13,6 +13,8 @@ const FILES_TO_CACHE = [
   BASE + "Dashboards/index.html",
   BASE + "Saisie/",
   BASE + 'Saisie/index.html',
+  BASE + "Saisie/Arbitrage/",
+  BASE + 'Saisie/Arbitrage/index.html',
   BASE + "SignInSignOut/",
   BASE + 'SignInSignOut/index.html',
   BASE + "manifest.webmanifest",
