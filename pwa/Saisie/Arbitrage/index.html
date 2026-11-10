@@ -96,35 +96,106 @@ function reportResult(){
  u.searchParams.set('jeux',s.games.map(g=>g.join('-')).join(','));
  location.href=u.href;
 }
-// Générateur PDF autonome : aucune bibliothèque ni connexion Internet nécessaires.
-// Police Helvetica standard : translittération des accents pour compatibilité PDF.
-function pdfAscii(t){return String(t).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[–—]/g,'-').replace(/[^\x20-\x7e]/g,'?')}
+// PDF autonome A4 paysage : une colonne par jeu, comme l'historique du scorer.
+// Aucun chargement externe : compatible avec la PWA hors ligne.
+function pdfAscii(t){return String(t??'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[–—]/g,'-').replace(/[^\x20-\x7e]/g,'?')}
 function pdfEscape(t){return pdfAscii(t).replace(/[\\()]/g,'\\$&')}
 function pdfFile(){
- const lines=[
- 'TC THONON SQUASH - MINI-LIGUE','FEUILLE DE MATCH - ARBITRAGE',
- '',`Match : ${s.match.id}  |  Phase ${s.match.phase}  |  Poule ${s.match.poule}`,
- `Joueur A : ${s.names[0]}`,`Joueur B : ${s.names[1]}`,
- `Resultat : ${s.wins[0]} - ${s.wins[1]} jeux`,
- `Duree : ${fmt(s.elapsedSeconds??Math.floor(((s.finishedAt||Date.now())-s.started)/1000))}`,
- `Statut : ${s.reason||'Termine'}`,'','DETAIL DES JEUX',
- ...s.games.map((g,i)=>`Jeu ${i+1} : ${s.names[0]} ${g[0]} - ${g[1]} ${s.names[1]}`),
- '','HISTORIQUE DES DECISIONS ET POINTS',
- ...s.events.map(e=>`Jeu ${e.game} | ${e.score} | ${e.kind} | Service ${e.server===0?s.names[0]:e.server===1?s.names[1]:'-'} | Carre ${e.side||'-'}`),
- '','Feuille generee localement par la PWA. Non validee par la commission.'
- ];
- const pages=[];for(let i=0;i<lines.length;i+=43)pages.push(lines.slice(i,i+43));
- const objects=[null],add=x=>{objects.push(x);return objects.length-1};
- const catalog=add(''),pagesObj=add(''),font=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');const pageIds=[];
- for(const page of pages){
-  let content='BT /F1 10 Tf 44 796 Td 14 TL\n';
-  for(const line of page)content+=`(${pdfEscape(line)}) Tj T*\n`;
-  content+='ET\n';const stream=add(`<< /Length ${content.length} >>\nstream\n${content}endstream`);
-  const p=add(`<< /Type /Page /Parent ${pagesObj} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${font} 0 R >> >> /Contents ${stream} 0 R >>`);pageIds.push(p);
+ const W=842,H=595,M=30,usable=W-2*M;
+ const names=s.names.map(n=>String(n||''));
+ const groups=[];
+ const gameCount=Math.max(s.games.length+(s.phase==='playing'&&s.events.some(e=>e.game===s.games.length+1)?1:0),1);
+ for(let g=1;g<=gameCount;g++){
+  const events=s.events.filter(e=>Number(e.game)===g);
+  const initial=s.initialSides?.[g]||'D';
+  const entries=[{side:initial,score:'0 - 0',kind:''}];
+  for(const e of events){
+   const kind=String(e.kind||'');
+   if(e.warning){entries.push({note:kind});continue}
+   if(kind==='Let'){entries.push({note:'Let'});continue}
+   const score=String(e.score||'').replace(/[–—]/g,'-').replace(/\s*[-]\s*/g,' - ');
+   entries.push({side:e.side==='G'?'G':e.side==='D'?'D':'-',score,kind:kind==='Échange'?'':kind});
+  }
+  groups.push({game:g,entries,final:s.games[g-1]||null});
  }
- objects[catalog]=`<< /Type /Catalog /Pages ${pagesObj} 0 R >>`;
- objects[pagesObj]=`<< /Type /Pages /Kids [${pageIds.map(x=>x+' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
- let pdf='%PDF-1.4\n',offsets=[0];for(let i=1;i<objects.length;i++){offsets[i]=pdf.length;pdf+=`${i} 0 obj\n${objects[i]}\nendobj\n`}
+ const maxPerSheet=5,sets=[];
+ for(let i=0;i<groups.length;i+=maxPerSheet)sets.push(groups.slice(i,i+maxPerSheet));
+ const commands=[];
+ const font=(size=10,bold=false)=>`/${bold?'F2':'F1'} ${size} Tf`;
+ const text=(x,y,t,size=10,bold=false,color=[0.16,0.14,0.23])=>{
+  commands.push(`${color.join(' ')} rg BT ${font(size,bold)} 1 0 0 1 ${x.toFixed(2)} ${y.toFixed(2)} Tm (${pdfEscape(t)}) Tj ET`);
+ };
+ const rect=(x,y,w,h,fill)=>commands.push(`${fill.join(' ')} rg ${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re f`);
+ const line=(x1,y1,x2,y2,col=[0.8,0.78,0.85])=>commands.push(`${col.join(' ')} RG 0.6 w ${x1} ${y1} m ${x2} ${y2} l S`);
+ const shorten=(str,max)=>{str=pdfAscii(str);return str.length>max?str.slice(0,max-3)+'...':str};
+ const pages=[];
+ function makePage(set,sectionIndex,partIndex=0){
+  commands.length=0;
+  rect(0,H-100,W,100,[0.12,0.11,0.18]);
+  text(M,H-37,'TC THONON SQUASH  /  MINI-LIGUE',17,true,[1,1,1]);
+  text(M,H-61,'FEUILLE DE MATCH - ARBITRAGE',11,false,[0.84,0.8,0.96]);
+  text(W-300,H-36,`Match ${shorten(s.match.id,22)}  |  Phase ${s.match.phase}  |  Poule ${s.match.poule}`,9,false,[1,1,1]);
+  text(W-300,H-57,`Duree : ${fmt(s.elapsedSeconds??Math.floor(((s.finishedAt||Date.now())-s.started)/1000))}`,10,false,[1,1,1]);
+  rect(M,H-137,usable,27,[0.91,0.9,0.95]);
+  text(M+12,H-128,shorten(names[0],30),12,true);
+  text(M+322,H-128,`${s.wins[0]}  -  ${s.wins[1]}`,15,true);
+  text(M+445,H-128,shorten(names[1],30),12,true);
+  const n=set.length,colGap=8,colW=(usable-colGap*(n-1))/n;
+  const top=H-158,bottom=49;
+  const maxRows=Math.floor((top-83-bottom)/15);
+  const maxChunks=Math.max(1,...set.map(g=>Math.ceil(g.entries.length/maxRows)));
+  for(let pageChunk=0;pageChunk<maxChunks;pageChunk++){
+   if(pageChunk>0){commands.length=0;rect(0,H-65,W,65,[0.12,0.11,0.18]);text(M,H-36,`TC THONON SQUASH  |  DETAIL DES JEUX (suite ${pageChunk+1})`,14,true,[1,1,1]);}
+   const t=pageChunk===0?top:H-85;
+   for(let j=0;j<n;j++){
+    const g=set[j],x=M+j*(colW+colGap);
+    rect(x,t-33,colW,33,[0.24,0.22,0.33]);
+    text(x+10,t-21,`JEU ${g.game}`,14,true,[1,1,1]);
+    rect(x,t-68,colW,34,[0.9,0.89,0.94]);
+    const maxName=colW<160?12:17;
+    text(x+7,t-48,shorten(names[0],maxName),8,true);
+    text(x+7,t-61,shorten(names[1],maxName),8,true);
+    text(x+colW-39,t-54,'A / B',8,true);
+    let y=t-83;
+    const subset=g.entries.slice(pageChunk*maxRows,(pageChunk+1)*maxRows);
+    for(let k=0;k<subset.length;k++){
+     const e=subset[k];
+     if(k%2===0)rect(x,y-5,colW,15,[0.96,0.95,0.98]);
+     if(e.note){text(x+7,y,shorten(e.note,Math.max(15,Math.floor(colW/5))),7,false,[0.38,0.22,0.53]);}
+     else{
+      text(x+9,y,e.side||'-',9,true,[0.43,0.37,0.54]);
+      text(x+35,y,e.score,10,true);
+      if(e.kind)text(x+colW-68,y,shorten(e.kind,11),6,false,[0.43,0.37,0.54]);
+     }
+     y-=15;
+    }
+    if(pageChunk===maxChunks-1&&g.final){
+     const fy=Math.max(bottom+22,y-6);
+     line(x+4,fy+13,x+colW-4,fy+13);
+     text(x+8,fy,`FIN : ${g.final[0]} - ${g.final[1]}`,10,true);
+    }
+   }
+   if(pageChunk===0){
+    text(M,24,`Statut : ${shorten(s.reason||'Match termine',62)}  |  Resultat local - validation administrateur requise`,8,false,[0.43,0.4,0.5]);
+   }else{text(M,24,'TC Thonon Squash - feuille de match (suite)',8,false,[0.43,0.4,0.5]);}
+   pages.push(commands.join('\n')+'\n');
+  }
+ }
+ sets.forEach((set,i)=>makePage(set,i));
+ // Assemble les pages avec deux polices Helvetica integrees au lecteur PDF.
+ const objects=[null],add=v=>(objects.push(v),objects.length-1);
+ const catalog=add(''),pagesRef=add('');
+ const regular=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+ const bold=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
+ const pageIds=[];
+ for(const body of pages){
+  const stream=add(`<< /Length ${body.length} >>\nstream\n${body}endstream`);
+  pageIds.push(add(`<< /Type /Page /Parent ${pagesRef} 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${regular} 0 R /F2 ${bold} 0 R >> >> /Contents ${stream} 0 R >>`));
+ }
+ objects[catalog]=`<< /Type /Catalog /Pages ${pagesRef} 0 R >>`;
+ objects[pagesRef]=`<< /Type /Pages /Kids [${pageIds.map(i=>i+' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
+ let pdf='%PDF-1.4\n',offsets=[0];
+ for(let i=1;i<objects.length;i++){offsets[i]=pdf.length;pdf+=`${i} 0 obj\n${objects[i]}\nendobj\n`}
  const xref=pdf.length;pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
  for(let i=1;i<objects.length;i++)pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';
  pdf+=`trailer\n<< /Size ${objects.length} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF`;
