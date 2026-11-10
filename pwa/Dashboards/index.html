@@ -605,6 +605,10 @@
       }
     }
 
+
+    .pdf-phase-btn { border:0; border-radius:12px; padding:11px 17px; background:#172554; color:#fff; font-weight:850; cursor:pointer; white-space:nowrap; }
+    .pdf-phase-btn:hover { background:#1d4ed8; }
+    .pdf-phase-btn:disabled { opacity:.55; cursor:wait; }
   </style>
 
 </head>
@@ -902,6 +906,8 @@ function afficherNavigation(
     <nav class="nav" aria-label="Sélection phase et poule">
 
       <div class="nav-inner">
+
+        <button id="pdf-phase-btn" class="pdf-phase-btn" type="button" onclick="exporterPhasePDF()">PDF</button>
 
         <select
           class="phase-select"
@@ -1363,6 +1369,127 @@ function afficherCarteMatch(
   `;
 }
 
+
+
+// =====================================================
+// EXPORT COMPLET D'UNE PHASE (TOUTES LES POULES)
+// =====================================================
+async function exporterPhasePDF() {
+  const bouton = document.getElementById("pdf-phase-btn");
+  if (!dataCourante || !Array.isArray(dataCourante.navigation)) return;
+  const phase = String(phaseCourante);
+  const nav = dataCourante.navigation.find(x => String(x.phase) === phase);
+  if (!nav || !Array.isArray(nav.poules) || !nav.poules.length) {
+    alert("Aucune poule disponible pour cette phase.");
+    return;
+  }
+  const poules = [...new Set(nav.poules.map(String))];
+  // Ouvrir immédiatement depuis le clic : sinon le navigateur bloque le pop-up après les fetch.
+  const fenetre = window.open("", "_blank");
+  if (!fenetre) {
+    alert("Autorise les pop-ups pour ce site afin d’ouvrir la feuille PDF.");
+    return;
+  }
+  fenetre.document.write('<!doctype html><html lang="fr"><meta charset="utf-8"><title>Préparation du PDF</title><body style="font:18px Arial;padding:40px">Chargement de toutes les poules de la phase…</body></html>');
+  fenetre.document.close();
+  const sections = [];
+  const erreurs = [];
+  if (bouton) { bouton.disabled = true; bouton.textContent = "Préparation du PDF…"; }
+  try {
+    for (const poule of poules) {
+      const cle = CACHE_PREFIX + phase + ":" + poule;
+      let data = null;
+      try {
+        const url = new URL(API_URL);
+        url.searchParams.set("phase", phase);
+        url.searchParams.set("poule", poule);
+        const response = await fetch(url.toString(), {cache:"no-store"});
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const json = await response.json();
+        if (!json.success || String(json.phase) !== phase || String(json.poule).toUpperCase() !== poule.toUpperCase()) {
+          throw new Error("Réponse incohérente pour la poule " + poule);
+        }
+        data = json;
+        try { localStorage.setItem(cle, JSON.stringify({savedAt:new Date().toISOString(),data})); } catch (_) {}
+      } catch (e) {
+        // Autoriser une édition hors ligne si la poule a déjà été consultée.
+        try {
+          const cached = JSON.parse(localStorage.getItem(cle) || "null");
+          if (cached && cached.data && String(cached.data.phase) === phase &&
+              String(cached.data.poule).toUpperCase() === poule.toUpperCase()) data = cached.data;
+        } catch (_) {}
+        if (!data) erreurs.push("Poule " + poule + " : " + e.message);
+      }
+      if (data) sections.push({poule, data});
+    }
+    // Ne jamais produire un PDF qui prétend être complet si une poule manque.
+    if (erreurs.length) {
+      fenetre.close();
+      alert("Export annulé : impossible de récupérer toutes les poules.\n" + erreurs.join("\n") +
+            "\nConnecte-toi à Internet ou consulte d'abord les poules manquantes.");
+      return;
+    }
+    const page = creerPageImpressionPhase(phase, sections);
+    fenetre.document.open();
+    fenetre.document.write(page);
+    fenetre.document.close();
+    // Le bouton d'impression dans le nouvel onglet évite les blocages de chargement.
+  } catch (e) {
+    fenetre.close();
+    alert("Impossible de préparer le PDF : " + e.message);
+  } finally {
+    if (bouton) { bouton.disabled = false; bouton.textContent = "PDF"; }
+  }
+}
+
+function creerPageImpressionPhase(phase, sections) {
+  const h = escapeHtml;
+  const fmt = value => h(value === null || value === undefined ? "" : value);
+  const date = new Date().toLocaleString("fr-FR");
+  const blocs = sections.map(({poule,data}) => {
+    const classement = Array.isArray(data.classement) ? data.classement : [];
+    const matchs = Array.isArray(data.matchs) ? data.matchs : [];
+    const termines = matchs.filter(m => normaliserStatut(m.statut) === "termine");
+    const restants = matchs.filter(m => normaliserStatut(m.statut) === "a planifier");
+    const lignes = classement.map(l => `<tr><td class="rank">${fmt(l.classement)}</td><td>${fmt(l.joueur)}</td><td class="num">${fmt(l.matchsGagnes)}</td><td class="num">${fmt(l.matchsPerdus)}</td><td class="num">${fmt(signe(l.jeuxDiff))}</td><td class="num">${fmt(signe(l.pointsDiff))}</td><td class="num pts">${fmt(l.score)}</td></tr>`).join("");
+    const resultats = termines.map(m => {
+      const jeux = Array.isArray(m.jeux) ? m.jeux.filter(j => Array.isArray(j) && j[0] !== "" && j[1] !== "") : [];
+      const details = jeux.map((j,i) => `J${i+1} ${fmt(j[0])}–${fmt(j[1])}`).join(" · ");
+      return `<tr><td>${fmt(m.joueurA)}</td><td class="num score">${fmt(m.scoreA)} – ${fmt(m.scoreB)}</td><td>${fmt(m.joueurB)}</td><td class="games">${details || "—"}${m.forfait ? `<span class="forfait"> · Forfait : ${fmt(m.forfait)}</span>` : ""}</td></tr>`;
+    }).join("");
+    return `<section class="poule"><h2>POULE ${h(poule)} <small>${classement.length} joueurs · ${termines.length} matchs terminés · ${restants.length} à planifier</small></h2>
+      <h3>Classement</h3><table><thead><tr><th>Rang</th><th>Joueur</th><th>V</th><th>D</th><th>Jeux +/-</th><th>Points +/-</th><th>Pts</th></tr></thead><tbody>${lignes || '<tr><td colspan="7">Aucun classement disponible</td></tr>'}</tbody></table>
+      <h3>Résultats des matchs</h3><table><thead><tr><th>Joueur A</th><th>Score</th><th>Joueur B</th><th>Détail des jeux</th></tr></thead><tbody>${resultats || '<tr><td colspan="4">Aucun match terminé</td></tr>'}</tbody></table>
+    </section>`;
+  }).join("");
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Mini-Ligue - Phase ${h(phase)} - Classements et résultats</title>
+  <style>
+    @page { size:A4 landscape; margin:13mm 12mm; }
+    *{box-sizing:border-box}body{font:12px Arial,sans-serif;color:#172033;margin:0;background:#eef2f7}
+    .sheet{max-width:1120px;margin:24px auto;background:white;padding:28px 34px}
+    header{border-bottom:4px solid #172554;padding-bottom:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:end}
+    header strong{font-size:22px;color:#172554}header p{margin:5px 0 0;color:#64748b}
+    .poule{break-before:page;page-break-before:always}
+    .poule:first-of-type{break-before:auto;page-break-before:auto}
+    h2{background:#172554;color:white;padding:11px 14px;border-radius:7px;font-size:18px;display:flex;justify-content:space-between;align-items:center;margin:0 0 14px}
+    h2 small{font-size:11px;font-weight:normal;color:#dbeafe}
+    h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin:18px 0 8px}
+    table{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:18px}
+    th{background:#e8edf6;text-align:left;color:#334155;font-size:10px;text-transform:uppercase}
+    th,td{padding:7px 9px;border-bottom:1px solid #dce4ed;overflow-wrap:anywhere;vertical-align:top}
+    tbody tr:nth-child(even){background:#f8fafc}tr{break-inside:avoid;page-break-inside:avoid}
+    .num,.rank,.score{text-align:center}.pts{font-weight:900;color:#1d4ed8}.score{font-weight:900;font-size:13px;white-space:nowrap}
+    .games{font-size:11px;color:#475569}.forfait{color:#b45309}
+    .poule table:first-of-type th:nth-child(1){width:8%}.poule table:first-of-type th:nth-child(2){width:42%}
+    .poule table:first-of-type th:nth-child(n+3){width:10%}
+    .poule table:last-of-type th:nth-child(1),.poule table:last-of-type th:nth-child(3){width:25%}
+    .poule table:last-of-type th:nth-child(2){width:12%}.poule table:last-of-type th:nth-child(4){width:38%}
+    .toolbar{padding:12px;background:#e2e8f0;text-align:center;position:sticky;top:0}
+    .toolbar button{background:#172554;color:white;border:0;border-radius:8px;padding:12px 22px;font-weight:bold;cursor:pointer}
+    @media print{body{background:white}.sheet{max-width:none;margin:0;padding:0}.toolbar{display:none}h2{print-color-adjust:exact;-webkit-print-color-adjust:exact}th{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+  </style></head><body><div class="toolbar"><button onclick="window.print()">📄 Enregistrer en PDF / Imprimer</button> <span>Dans la fenêtre d'impression, choisir « Enregistrer au format PDF ».</span></div>
+  <div class="sheet"><header><div><strong>TC THONON SQUASH · MINI-LIGUE</strong><p>Phase ${h(phase)} — Classements et résultats de toutes les poules</p></div><p>Édité le ${h(date)}</p></header>${blocs}</div></body></html>`;
+}
 
 // =====================================================
 // MODE TV
