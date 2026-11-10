@@ -3693,6 +3693,35 @@ chargerMatchs();
 
 
 
+// Transfert du scorer : paramètres transmis uniquement au navigateur, aucun envoi automatique.
+(function initialiserReportArbitrage(){
+ const q=new URLSearchParams(location.search);
+ if(q.get('arbitrage')!=='1')return;
+ const id=q.get('matchId')||'';
+ const raw=q.get('jeux')||'';
+ const jeux=raw.split(',').filter(Boolean).map(v=>v.split('-').map(Number));
+ if(!id||jeux.length<3||jeux.length>5||jeux.some(g=>g.length!==2||g.some(n=>!Number.isInteger(n)||n<0||n>99)))return;
+ let tries=0;
+ const poll=setInterval(()=>{
+  tries++;
+  const select=document.getElementById('matchSelect');
+  if(Array.isArray(matchs)&&matchs.some(m=>String(m.id)===id)&&select){
+   clearInterval(poll);
+   select.value=id;selectionMatch();
+   for(let i=0;i<jeux.length;i++){
+    const a=document.getElementById('a'+(i+1)),b=document.getElementById('b'+(i+1));
+    if(a&&b){a.value=jeux[i][0];b.value=jeux[i][1];scoreChange(i+1)}
+   }
+   calculerMatch();gererJeuxVisibles();
+   const info=document.createElement('p');info.style.cssText='background:#dcfce7;color:#166534;padding:12px;border-radius:10px;font-weight:700;margin:14px 0';
+   info.textContent='Résultat reporté depuis le scorer. Vérifiez les jeux, renseignez votre e-mail, puis envoyez pour validation.';
+   select.closest('main,section,div')?.prepend(info);
+   history.replaceState(null,'',location.pathname);
+  }else if(tries>=60){clearInterval(poll);alert('Le match arbitré n’est pas disponible dans la liste des matchs à planifier. Vérifiez la synchronisation ou son statut.');}
+ },500);
+})();
+
+
 </script>
 
 
