@@ -13,7 +13,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./assets/icons/TC-Thonon-Squash-Logo.png">
   <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
-  
+
   <meta name="apple-mobile-web-app-capable"
         content="yes">
   <meta name="apple-mobile-web-app-status-bar-style"
@@ -144,6 +144,16 @@
       color: #0f172a;
     }
 
+    /* Image centrale de l'accueil */
+    .home-image {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
     .footer {
       margin: 18px 0 4px;
       text-align: center;
@@ -261,9 +271,11 @@
   <!-- ACCUEIL -->
   <main class="app">
     <div class="card">
-      <h2 class="home-title">
-        TC Thonon Squash - Mini-Ligue
-      </h2>
+      <img
+        class="home-image"
+        src="./assets/images/home.png"
+        alt="TC Thonon Squash - Mini-Ligue"
+      >
     </div>
 
     <div class="footer">
